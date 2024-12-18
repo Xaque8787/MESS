@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  docker-app-selector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: MESS_APP
+    ports:
+      - "3001:3001"  # Single port for both frontend and API
+    volumes:
+      - ./data:/app/data  # Persist selections and environment variables
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

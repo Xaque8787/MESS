@@ -1,0 +1,151 @@
+{
+  "apps": [
+    {
+      "id": "media_server",
+      "name": "Jellyfin",
+      "description": "Install Jellyfin Media Server",
+      "category": "Media Server",
+      "selected": false,
+      "initialized": true,
+      "inputs": [
+        {
+          "title": "Admin User",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter a username for the Admin user",
+          "value": "username"
+        },
+        {
+          "title": "Admin Password",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter a password for the Admin user",
+          "value": "password"
+        },
+        {
+          "title": "mediaPath",
+          "type": "text",
+          "required": false,
+          "placeholder": "Path to media directory",
+          "value": ""
+        },
+        {
+          "title": "enableTranscoding",
+          "type": "checkbox",
+          "required": false,
+          "value": true
+        }
+      ],
+      "pendingRemoval": false,
+      "pendingUpdate": false,
+      "pendingInstall": false
+    },
+    {
+      "id": "sonarr_app",
+      "name": "Sonarr",
+      "description": "TV Series management application",
+      "category": "STARR APPS",
+      "selected": false,
+      "initialized": true,
+      "inputs": [
+        {
+          "title": "port",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter desired port",
+          "value": "8787"
+        },
+        {
+          "title": "Enable Basic Auth",
+          "type": "checkbox",
+          "required": false,
+          "value": true
+        }
+      ],
+      "pendingRemoval": false,
+      "pendingUpdate": false,
+      "pendingInstall": false
+    },
+    {
+      "id": "radarr_app",
+      "name": "Radarr",
+      "description": "Movie management application",
+      "category": "STARR APPS",
+      "selected": false,
+      "initialized": false,
+      "inputs": [
+        {
+          "title": "Port",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter desired port"
+        },
+        {
+          "title": "Enable Basic Auth",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "pendingInstall": false,
+      "pendingUpdate": false,
+      "pendingRemoval": false
+    },
+    {
+      "id": "Prowlarr_app",
+      "name": "Prowlarr",
+      "description": "Index management application",
+      "category": "STARR APPS",
+      "selected": false,
+      "initialized": true,
+      "inputs": [
+        {
+          "title": "Port",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter desired port",
+          "value": "9696"
+        },
+        {
+          "title": "Enable Basic Auth",
+          "type": "checkbox",
+          "required": false,
+          "value": true
+        }
+      ],
+      "pendingRemoval": false,
+      "pendingUpdate": false,
+      "pendingInstall": false
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashy Dashboard",
+      "description": "Monitor your applications",
+      "category": "WEB APPS",
+      "selected": false,
+      "initialized": false,
+      "prereq": "media_server",
+      "inputs": [
+        {
+          "title": "apikey",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter API key"
+        },
+        {
+          "title": "environmentVar1",
+          "type": "text",
+          "required": false,
+          "placeholder": "Optional environment variable"
+        },
+        {
+          "title": "enableMetrics",
+          "type": "checkbox",
+          "required": false
+        }
+      ],
+      "pendingRemoval": false,
+      "pendingUpdate": false,
+      "pendingInstall": false
+    }
+  ]
+}
