@@ -5,7 +5,7 @@ export const initialApps: DockerApp[] = [
     id: 'media_server',
     name: 'Jellyfin',
     description: 'Install Jellyfin Media Server',
-    category: 'Media Server',
+    category: 'MEDIA SERVERS',
     selected: false,
     initialized: false,
     inputs: [
@@ -83,6 +83,7 @@ export const initialApps: DockerApp[] = [
     category: 'STARR APPS',
     selected: false,
     initialized: false,
+    prereq: 'sonarr_app',
     inputs: [
       {
         title: 'Port',
@@ -94,6 +95,48 @@ export const initialApps: DockerApp[] = [
         title: 'Enable Basic Auth',
         type: 'checkbox',
         required: false
+      },
+      {
+        title: 'Enable Zilean Indexer',
+        type: 'checkbox',
+        required: false
+      },
+      {
+        title: 'Enable TorBox Indexer',
+        type: 'checkbox',
+        required: false
+      }
+    ]
+  },
+
+  {
+    id: 'blackhole_app',
+    name: 'Blackhole',
+    description: 'Blackhole downloader for sonarr/radarr',
+    category: 'DOWNLOAD CLIENTS',
+    selected: false,
+    initialized: false,
+    inputs: [
+      {
+        title: 'Debrid API',
+        type: 'text',
+        required: true,
+        placeholder: 'Enter your debrid provider API'
+      },
+      {
+        title: 'TorBox',
+        type: 'checkbox',
+        required: false
+      },
+      {
+        title: 'RealDebrid',
+        type: 'checkbox',
+        required: false
+      },
+      {
+        title: 'Allow un-cached',
+        type: 'checkbox',
+        required: false
       }
     ]
   },
@@ -101,22 +144,16 @@ export const initialApps: DockerApp[] = [
     id: 'dashboard',
     name: 'Dashy Dashboard',
     description: 'Monitor your applications',
-    category: 'WEB APPS',
+    category: 'MANAGEMENT',
     selected: false,
     initialized: false,
     prereq: 'media_server',
     inputs: [
       {
-        title: 'apikey',
+        title: 'Title',
         type: 'text',
         required: true,
-        placeholder: 'Enter API key'
-      },
-      {
-        title: 'environmentVar1',
-        type: 'text',
-        required: false,
-        placeholder: 'Optional environment variable'
+        placeholder: 'Enter a title for your Dashboard'
       },
       {
         title: 'enableMetrics',

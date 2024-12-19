@@ -1,8 +1,8 @@
 export const APP_CATEGORIES = [
-  'Media Server',
+  'MEDIA SERVERS',
   'STARR APPS',
-  'NETWORKING',
-  'WEB APPS',
+  'DOWNLOAD CLIENTS',
+  'MANAGEMENT',
 ] as const;
 
 export type AppCategory = typeof APP_CATEGORIES[number];
