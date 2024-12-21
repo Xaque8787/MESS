@@ -39,11 +39,11 @@ export function useAppSelections() {
     };
 
     updatedApps.forEach(app => {
-      if (!app.initialized && app.pendingInstall) {
+      if (app.pendingInstall && !app.initialized) {
         changes.installs.push(app);
-      } else if (app.initialized && app.pendingRemoval) {
+      } else if (app.pendingRemoval && app.initialized) {
         changes.removals.push(app);
-      } else if (app.initialized && app.pendingUpdate) {
+      } else if (app.pendingUpdate && app.initialized) {
         changes.updates.push(app);
       }
     });
@@ -75,7 +75,7 @@ export function useAppSelections() {
             ...app,
             inputs: app.inputs?.map(input => ({
               ...input,
-              value: inputs[input.title] || ''
+              value: inputs[input.title] ?? input.value ?? ''
             })),
             pendingInstall: true,
             pendingRemoval: false,
@@ -142,50 +142,16 @@ export function useAppSelections() {
 
   const confirmChanges = async () => {
     try {
-      const updatedApps = apps.map(app => {
-        if (!app.initialized && app.pendingInstall) {
-          return {
-            ...app,
-            initialized: true,
-            selected: false,
-            pendingInstall: false,
-            pendingUpdate: false,
-            pendingRemoval: false
-          };
-        }
-        if (app.initialized && app.pendingRemoval) {
-          return {
-            ...app,
-            initialized: false,
-            selected: false,
-            pendingInstall: false,
-            pendingUpdate: false,
-            pendingRemoval: false,
-            inputs: app.inputs?.map(input => ({ ...input, value: '' }))
-          };
-        }
-        if (app.initialized && app.pendingUpdate) {
-          return {
-            ...app,
-            selected: false,
-            pendingInstall: false,
-            pendingUpdate: false,
-            pendingRemoval: false
-          };
-        }
-        return {
-          ...app,
-          selected: false,
-          pendingInstall: false,
-          pendingUpdate: false,
-          pendingRemoval: false
-        };
-      });
+      // Keep pending flags until after successful initialization
+      const updatedApps = apps.map(app => ({
+        ...app,
+        selected: false
+      }));
 
       // Create environment data
       const envData: AppEnvironment = {};
       updatedApps.forEach(app => {
-        if (app.initialized) {
+        if (app.initialized || app.pendingInstall) {
           envData[app.id] = {
             installed: true,
             config: {}
@@ -201,7 +167,16 @@ export function useAppSelections() {
       await api.saveSelections({ apps: updatedApps });
       await api.initializeApps({ apps: updatedApps, environment: envData });
       
-      setApps(updatedApps);
+      // Update app states after successful initialization
+      const finalApps = updatedApps.map(app => ({
+        ...app,
+        initialized: app.pendingInstall ? true : app.initialized,
+        pendingInstall: false,
+        pendingUpdate: false,
+        pendingRemoval: false
+      }));
+
+      setApps(finalApps);
       setPendingChanges({ installs: [], removals: [], updates: [] });
       setShowConfirmation(false);
     } catch (err) {

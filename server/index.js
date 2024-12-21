@@ -3,27 +3,35 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createServer } from 'http';
 import { environmentService } from './services/environment.js';
+import { setupWebSocket } from './services/websocketService.js';
+import { executeDeployment } from './services/deploymentService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
+const server = createServer(app);
 const PORT = 3001;
 
 // Data file paths
 const DATA_DIR = path.join(__dirname, '../data');
 const SELECTIONS_FILE = path.join(DATA_DIR, 'selections.json');
 
+// Set up WebSocket
+const wss = setupWebSocket(server);
+
 // Ensure data directory exists before starting server
 async function initializeServer() {
   try {
     // Ensure data directory exists
     await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.mkdir(path.join(__dirname, '../scripts/apps'), { recursive: true });
     
     // Initialize environment service
     await environmentService.ensureEnvFile();
     
     // Start server
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Data directory: ${DATA_DIR}`);
     });
@@ -63,9 +71,23 @@ app.post('/api/selections', async (req, res) => {
 
 app.post('/api/initialize', async (req, res) => {
   try {
+    console.log('Received initialization request:', req.body);
     const { apps, environment } = req.body;
-    const envData = await environmentService.updateAppStates(apps, environment);
-    res.json({ success: true, environment: envData });
+    
+    // Update environment first
+    const envData = await environmentService.updateAppStates(apps, environment, wss);
+    console.log('Environment updated:', envData);
+
+    // Execute deployment scripts
+    try {
+      console.log('Starting deployment execution');
+      await executeDeployment(wss);
+      console.log('Deployment completed');
+      res.json({ success: true, environment: envData });
+    } catch (error) {
+      console.error('Script execution error:', error);
+      res.status(500).json({ error: 'Failed to execute scripts' });
+    }
   } catch (error) {
     console.error('Initialization error:', error);
     res.status(500).json({ error: 'Failed to initialize apps' });

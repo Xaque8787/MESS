@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: MESS_APP
+    container_name: docker-app-selector
     ports:
       - "3001:3001"  # Single port for both frontend and API
     volumes:
