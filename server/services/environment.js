@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { broadcastOutput } from './websocketService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '../../data');
@@ -51,39 +52,39 @@ export const environmentService = {
     }
   },
 
-  async updateAppStates(apps, environment) {
+  async updateAppStates(apps, environment, wss) {
+    console.log('Updating app states:', { apps, environment });
+    broadcastOutput(wss, 'Updating application states...\n');
+
     const currentEnv = await this.readEnvironment();
     const updatedEnv = {
       ...currentEnv,
-      apps: { ...currentEnv.apps }
+      apps: {}
     };
 
     // Process app states and configurations
     apps.forEach(app => {
-      // Handle app installation status
-      if (app.initialized) {
-        updatedEnv.apps[app.id] = true;
-      } else {
-        delete updatedEnv.apps[app.id];
-      }
+      updatedEnv.apps[app.id] = {
+        initialized: app.initialized,
+        pendingInstall: app.pendingInstall || false,
+        pendingUpdate: app.pendingUpdate || false,
+        pendingRemoval: app.pendingRemoval || false,
+        config: {}
+      };
 
       // Handle app configurations
-      if (app.initialized && app.inputs) {
-        const configValues = {};
+      if (app.inputs) {
         app.inputs.forEach(input => {
-          if (input.value) {
-            configValues[input.title] = input.value;
+          if (input.value !== undefined) {
+            updatedEnv.apps[app.id].config[input.title] = input.value;
           }
         });
-
-        if (Object.keys(configValues).length > 0) {
-          updatedEnv[app.id] = configValues;
-        }
-      } else {
-        delete updatedEnv[app.id];
       }
     });
 
+    console.log('Updated environment:', updatedEnv);
+    broadcastOutput(wss, 'Application states updated.\n');
+    
     await this.writeEnvironment(updatedEnv);
     return updatedEnv;
   }
