@@ -1,9 +1,15 @@
 export interface AppInput {
   title: string;
-  type: 'text' | 'checkbox';
+  type: 'text' | 'checkbox' | 'conditional-text';
   required: boolean;
   placeholder?: string;
   value?: string | boolean;
+  dependentField?: {
+    title: string;
+    placeholder?: string;
+    value?: string;
+    required: boolean;
+  };
 }
 
 export interface DockerApp {
@@ -16,27 +22,7 @@ export interface DockerApp {
   pendingRemoval?: boolean;
   pendingUpdate?: boolean;
   pendingInstall?: boolean;
-  prereq?: string;
+  prereqs?: string[]; // Changed from string to string[]
+  iconUrl?: string;  // Added support for custom icons
   inputs?: AppInput[];
-}
-
-export interface AppSelections {
-  apps: DockerApp[];
-}
-
-export interface PendingChanges {
-  installs: DockerApp[];
-  removals: DockerApp[];
-  updates: DockerApp[];
-}
-
-export interface AppConfig {
-  [key: string]: string | boolean;
-}
-
-export interface AppEnvironment {
-  [appId: string]: {
-    installed: boolean;
-    config: AppConfig;
-  };
 }

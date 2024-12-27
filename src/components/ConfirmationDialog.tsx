@@ -12,8 +12,11 @@ export function ConfirmationDialog({ changes, onConfirm, onCancel }: Confirmatio
   const [showTerminal, setShowTerminal] = useState(false);
 
   const handleConfirm = () => {
-    onConfirm();
     setShowTerminal(true);
+    // Delay the confirmation to ensure WebSocket is connected
+    setTimeout(() => {
+      onConfirm();
+    }, 500);
   };
 
   return (

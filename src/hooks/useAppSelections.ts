@@ -21,8 +21,39 @@ export function useAppSelections() {
   const loadSelections = async () => {
     try {
       const data = await api.getSelections();
+      const envData = await api.getEnvironment();
+
       if (data.apps && data.apps.length > 0) {
-        setApps(data.apps);
+        const mergedApps = initialApps.map(initialApp => {
+          const savedApp = data.apps.find(app => app.id === initialApp.id);
+          const envConfig = envData.apps[initialApp.id]?.config || {};
+          
+          if (savedApp) {
+            return {
+              ...initialApp,
+              initialized: savedApp.initialized,
+              selected: false,
+              inputs: initialApp.inputs?.map(input => {
+                if (input.type === 'conditional-text' && input.dependentField) {
+                  return {
+                    ...input,
+                    value: savedApp.initialized ? envConfig[input.title] : undefined,
+                    dependentField: {
+                      ...input.dependentField,
+                      value: savedApp.initialized ? envConfig[input.dependentField.title] : undefined
+                    }
+                  };
+                }
+                return {
+                  ...input,
+                  value: savedApp.initialized ? envConfig[input.title] : undefined
+                };
+              })
+            };
+          }
+          return initialApp;
+        });
+        setApps(mergedApps);
       }
     } catch (err) {
       setError('Failed to load selections');
@@ -55,7 +86,7 @@ export function useAppSelections() {
     setApps(prevApps => {
       const newApps = prevApps.map(app => ({
         ...app,
-        selected: app.id === appId ? !app.selected : app.selected,
+        selected: app.id === appId ? !app.selected : false,
         ...(app.id === appId && !app.selected ? {
           pendingRemoval: false,
           pendingUpdate: false,
@@ -73,10 +104,22 @@ export function useAppSelections() {
         if (app.id === appId) {
           return {
             ...app,
-            inputs: app.inputs?.map(input => ({
-              ...input,
-              value: inputs[input.title] ?? input.value ?? ''
-            })),
+            inputs: app.inputs?.map(input => {
+              if (input.type === 'conditional-text' && input.dependentField) {
+                return {
+                  ...input,
+                  value: inputs[input.title],
+                  dependentField: {
+                    ...input.dependentField,
+                    value: inputs[input.dependentField.title]
+                  }
+                };
+              }
+              return {
+                ...input,
+                value: inputs[input.title]
+              };
+            }),
             pendingInstall: true,
             pendingRemoval: false,
             pendingUpdate: false
@@ -97,7 +140,8 @@ export function useAppSelections() {
             ...app,
             pendingRemoval: true,
             pendingUpdate: false,
-            pendingInstall: false
+            pendingInstall: false,
+            selected: false
           };
         }
         return app;
@@ -113,10 +157,22 @@ export function useAppSelections() {
         if (app.id === appId) {
           return {
             ...app,
-            inputs: app.inputs?.map(input => ({
-              ...input,
-              value: inputs[input.title]
-            })),
+            inputs: app.inputs?.map(input => {
+              if (input.type === 'conditional-text' && input.dependentField) {
+                return {
+                  ...input,
+                  value: inputs[input.title],
+                  dependentField: {
+                    ...input.dependentField,
+                    value: inputs[input.dependentField.title]
+                  }
+                };
+              }
+              return {
+                ...input,
+                value: inputs[input.title]
+              };
+            }),
             pendingUpdate: true,
             pendingRemoval: false,
             pendingInstall: false
@@ -142,9 +198,10 @@ export function useAppSelections() {
 
   const confirmChanges = async () => {
     try {
-      // Create environment data with pending operations preserved
       const envData: AppEnvironment = {};
       apps.forEach(app => {
+        if (!app.initialized && !app.pendingInstall) return;
+        
         envData[app.id] = {
           installed: app.initialized,
           pendingInstall: app.pendingInstall || false,
@@ -152,8 +209,14 @@ export function useAppSelections() {
           pendingRemoval: app.pendingRemoval || false,
           config: {}
         };
+
         app.inputs?.forEach(input => {
-          if (input.value !== undefined) {
+          if (input.type === 'conditional-text' && input.dependentField) {
+            if (input.value) {
+              envData[app.id].config[input.title] = input.value;
+              envData[app.id].config[input.dependentField.title] = input.dependentField.value;
+            }
+          } else if (input.value !== undefined) {
             envData[app.id].config[input.title] = input.value;
           }
         });
@@ -162,15 +225,7 @@ export function useAppSelections() {
       await api.saveSelections({ apps });
       await api.initializeApps({ apps, environment: envData });
       
-      // Update local state after successful initialization
-      setApps(prevApps => prevApps.map(app => ({
-        ...app,
-        initialized: app.pendingInstall ? true : app.pendingRemoval ? false : app.initialized,
-        pendingInstall: false,
-        pendingUpdate: false,
-        pendingRemoval: false,
-        selected: false
-      })));
+      await loadSelections();
       
       setPendingChanges({ installs: [], removals: [], updates: [] });
       setShowConfirmation(false);

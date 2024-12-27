@@ -64,18 +64,27 @@ export const environmentService = {
 
     // Process app states and configurations
     apps.forEach(app => {
+      // Preserve existing config for initialized apps that aren't being removed
+      const existingConfig = currentEnv.apps[app.id]?.config || {};
+      const shouldPreserveConfig = app.initialized && !app.pendingRemoval;
+
       updatedEnv.apps[app.id] = {
         initialized: app.initialized,
         pendingInstall: app.pendingInstall || false,
         pendingUpdate: app.pendingUpdate || false,
         pendingRemoval: app.pendingRemoval || false,
-        config: {}
+        config: shouldPreserveConfig ? existingConfig : {}
       };
 
-      // Handle app configurations
-      if (app.inputs) {
+      // Update config with new values
+      if (app.inputs && !app.pendingRemoval) {
         app.inputs.forEach(input => {
-          if (input.value !== undefined) {
+          if (input.type === 'conditional-text' && input.dependentField) {
+            if (input.value) {
+              updatedEnv.apps[app.id].config[input.title] = input.value;
+              updatedEnv.apps[app.id].config[input.dependentField.title] = input.dependentField.value;
+            }
+          } else if (input.value !== undefined) {
             updatedEnv.apps[app.id].config[input.title] = input.value;
           }
         });

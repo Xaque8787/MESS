@@ -23,16 +23,30 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
       const initialValues: Record<string, string | boolean> = {};
       app.inputs.forEach(input => {
         initialValues[input.title] = input.value ?? '';
+        if (input.type === 'conditional-text' && input.dependentField) {
+          initialValues[input.dependentField.title] = input.dependentField.value ?? '';
+        }
       });
       setInputValues(initialValues);
     }
   }, [app]);
 
-  const handleInputChange = (title: string, value: string | boolean) => {
-    setInputValues(prev => ({
-      ...prev,
-      [title]: value
-    }));
+  const handleInputChange = (title: string, value: string | boolean, dependentValue?: string) => {
+    setInputValues(prev => {
+      const newValues = {
+        ...prev,
+        [title]: value
+      };
+      
+      if (dependentValue !== undefined) {
+        const input = app.inputs?.find(i => i.title === title);
+        if (input?.dependentField) {
+          newValues[input.dependentField.title] = dependentValue;
+        }
+      }
+      
+      return newValues;
+    });
   };
 
   const handleAction = (e: React.MouseEvent, action: () => void) => {
@@ -50,9 +64,12 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
     onInstall(app.id, inputValues);
   };
 
-  const isInstallDisabled = app.inputs?.some(input => 
-    input.required && input.type === 'text' && (!inputValues[input.title] || !(inputValues[input.title] as string).trim())
-  ) ?? false;
+  const isInstallDisabled = app.inputs?.some(input => {
+    if (input.type === 'conditional-text' && input.value && input.dependentField?.required) {
+      return !inputValues[input.dependentField.title];
+    }
+    return input.required && input.type === 'text' && (!inputValues[input.title] || !(inputValues[input.title] as string).trim());
+  }) ?? false;
 
   return (
     <div className="mt-4 space-y-3 pl-10" onClick={(e) => e.stopPropagation()}>
@@ -64,7 +81,13 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
         <AppInputs
           inputs={app.inputs.map(input => ({
             ...input,
-            value: inputValues[input.title] ?? input.value ?? ''
+            value: inputValues[input.title] ?? input.value ?? '',
+            ...(input.dependentField && {
+              dependentField: {
+                ...input.dependentField,
+                value: inputValues[input.dependentField.title] ?? input.dependentField.value ?? ''
+              }
+            })
           }))}
           onChange={handleInputChange}
           onClick={(e) => e.stopPropagation()}

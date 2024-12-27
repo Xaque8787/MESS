@@ -17,20 +17,16 @@ const PORT = 3001;
 const DATA_DIR = path.join(__dirname, '../data');
 const SELECTIONS_FILE = path.join(DATA_DIR, 'selections.json');
 
-// Set up WebSocket
-const wss = setupWebSocket(server);
+// Set up WebSocket with path
+const wss = setupWebSocket(server, '/ws');
 
 // Ensure data directory exists before starting server
 async function initializeServer() {
   try {
-    // Ensure data directory exists
     await fs.mkdir(DATA_DIR, { recursive: true });
     await fs.mkdir(path.join(__dirname, '../scripts/apps'), { recursive: true });
-    
-    // Initialize environment service
     await environmentService.ensureEnvFile();
     
-    // Start server
     server.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Data directory: ${DATA_DIR}`);
@@ -43,11 +39,19 @@ async function initializeServer() {
 
 app.use(cors());
 app.use(express.json());
-
-// Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // API Routes
+app.get('/api/environment', async (req, res) => {
+  try {
+    const envData = await environmentService.readEnvironment();
+    res.json(envData);
+  } catch (error) {
+    console.error('Error reading environment:', error);
+    res.status(500).json({ error: 'Failed to read environment' });
+  }
+});
+
 app.get('/api/selections', async (req, res) => {
   try {
     const data = await fs.readFile(SELECTIONS_FILE, 'utf-8')
@@ -73,12 +77,8 @@ app.post('/api/initialize', async (req, res) => {
   try {
     console.log('Received initialization request:', req.body);
     const { apps, environment } = req.body;
-    
-    // Update environment first
     const envData = await environmentService.updateAppStates(apps, environment, wss);
-    console.log('Environment updated:', envData);
-
-    // Execute deployment scripts
+    
     try {
       console.log('Starting deployment execution');
       await executeDeployment(wss);
@@ -94,10 +94,8 @@ app.post('/api/initialize', async (req, res) => {
   }
 });
 
-// Serve index.html for all other routes (SPA support)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-// Initialize server
 initializeServer();

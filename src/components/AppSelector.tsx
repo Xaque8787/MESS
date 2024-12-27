@@ -41,19 +41,34 @@ export function AppSelector({ app, onSelect }: AppSelectorProps) {
     return null;
   };
 
+  const AppIcon = () => {
+    if (app.iconUrl) {
+      return (
+        <div className="w-16 h-16 flex items-center justify-center">
+          <img 
+            src={app.iconUrl} 
+            alt={app.name} 
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      );
+    }
+    return <Server className={`w-16 h-16 ${
+      app.pendingRemoval ? 'text-red-500' :
+      app.initialized && app.pendingUpdate ? 'text-yellow-500' :
+      app.initialized ? 'text-green-500' :
+      app.pendingInstall ? 'text-blue-500' :
+      'text-gray-400'
+    }`} />;
+  };
+
   return (
     <div 
       onClick={() => onSelect(app.id)}
       className={`p-4 border rounded-lg cursor-pointer transition-all ${getBorderStyle()}`}
     >
       <div className="flex items-center gap-3">
-        <Server className={
-          app.pendingRemoval ? 'text-red-500' :
-          app.initialized && app.pendingUpdate ? 'text-yellow-500' :
-          app.initialized ? 'text-green-500' :
-          app.pendingInstall ? 'text-blue-500' :
-          'text-gray-400'
-        } />
+        <AppIcon />
         <div>
           <div className="flex items-center gap-2">
             <h3 className="font-medium text-gray-900">{app.name}</h3>

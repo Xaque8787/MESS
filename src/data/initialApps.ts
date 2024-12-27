@@ -8,6 +8,7 @@ export const initialApps: DockerApp[] = [
     category: 'MEDIA SERVERS',
     selected: false,
     initialized: false,
+    iconUrl: 'https://jellyfin.org/images/logo.svg', // Example custom icon
     inputs: [
       {
         title: 'Admin User',
@@ -83,7 +84,7 @@ export const initialApps: DockerApp[] = [
     category: 'STARR APPS',
     selected: false,
     initialized: false,
-    prereq: 'sonarr_app',
+    prereqs: ['sonarr_app', 'radarr_app'], // Multiple prerequisites
     inputs: [
       {
         title: 'Port',
@@ -95,20 +96,9 @@ export const initialApps: DockerApp[] = [
         title: 'Enable Basic Auth',
         type: 'checkbox',
         required: false
-      },
-      {
-        title: 'Enable Zilean Indexer',
-        type: 'checkbox',
-        required: false
-      },
-      {
-        title: 'Enable TorBox Indexer',
-        type: 'checkbox',
-        required: false
       }
     ]
   },
-
   {
     id: 'blackhole_app',
     name: 'Blackhole',
@@ -125,13 +115,23 @@ export const initialApps: DockerApp[] = [
       },
       {
         title: 'TorBox',
-        type: 'checkbox',
-        required: false
+        type: 'conditional-text',
+        required: false,
+        dependentField: {
+          title: 'TorBox API Key',
+          placeholder: 'Enter TorBox API key',
+          required: true
+        }
       },
       {
         title: 'RealDebrid',
-        type: 'checkbox',
-        required: false
+        type: 'conditional-text',
+        required: false,
+        dependentField: {
+          title: 'RealDebrid API Key',
+          placeholder: 'Enter RealDebrid API key',
+          required: true
+        }
       },
       {
         title: 'Allow un-cached',
@@ -147,7 +147,7 @@ export const initialApps: DockerApp[] = [
     category: 'MANAGEMENT',
     selected: false,
     initialized: false,
-    prereq: 'media_server',
+    prereqs: ['media_server'],
     inputs: [
       {
         title: 'Title',

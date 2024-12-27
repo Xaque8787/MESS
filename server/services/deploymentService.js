@@ -18,11 +18,9 @@ async function processApps(wss, apps) {
   const updatedApps = { ...apps };
   
   for (const [appId, appConfig] of Object.entries(apps)) {
-    // Skip if no pending changes or not an object
     if (!appConfig || typeof appConfig !== 'object') continue;
 
     try {
-      // Determine the correct operation based on pending flags
       let operation = null;
       
       if (appConfig.pendingRemoval) {
@@ -33,14 +31,14 @@ async function processApps(wss, apps) {
         operation = 'update';
       }
 
-      // Skip if no operation needed
       if (!operation) {
         console.log(`No pending operation for ${appId}`);
+        broadcastOutput(`No pending operation for ${appId}\n`);
         continue;
       }
 
       console.log(`Processing ${operation} for ${appId}`);
-      broadcastOutput(wss, `Processing ${operation} for ${appId}...\n`);
+      broadcastOutput(`Processing ${operation} for ${appId}...\n`);
       
       await processApp(wss, appId, appConfig, operation);
 
@@ -50,12 +48,21 @@ async function processApps(wss, apps) {
         initialized: operation === 'install' ? true : operation === 'remove' ? false : appConfig.initialized,
         pendingInstall: false,
         pendingUpdate: false,
-        pendingRemoval: false
+        pendingRemoval: false,
+        selected: operation === 'remove' ? false : appConfig.selected, // Reset selected state on removal
+        config: appConfig.config || {},
+        // Reset input values on removal
+        inputs: operation === 'remove' ? 
+          appConfig.inputs?.map(input => ({
+            ...input,
+            value: undefined
+          })) : 
+          appConfig.inputs
       };
 
     } catch (error) {
       console.error(`Error processing ${appId}:`, error);
-      broadcastOutput(wss, `Error processing ${appId}: ${error.message}\n`);
+      broadcastOutput(`Error processing ${appId}: ${error.message}\n`);
       throw error;
     }
   }
@@ -65,23 +72,47 @@ async function processApps(wss, apps) {
 
 export async function executeDeployment(wss) {
   try {
+    broadcastOutput('Starting deployment...\n');
     const envData = await getEnvironmentData();
     
-    // Process apps and get updated states
     const updatedApps = await processApps(wss, envData.apps);
     
-    // Update environment with new app states
     const newEnvData = {
       ...envData,
       apps: updatedApps,
       lastUpdated: new Date().toISOString()
     };
     
+    // Save the updated environment
     await updateEnvironmentData(newEnvData);
+    
+    // Also update the selections file to reflect the new state
+    const selectionsFile = join(process.cwd(), 'data', 'selections.json');
+    const selections = JSON.parse(await readFile(selectionsFile, 'utf-8'));
+    
+    selections.apps = selections.apps.map(app => {
+      const updatedApp = updatedApps[app.id];
+      if (updatedApp) {
+        return {
+          ...app,
+          initialized: updatedApp.initialized,
+          pendingInstall: false,
+          pendingUpdate: false,
+          pendingRemoval: false,
+          selected: updatedApp.selected, // Preserve selected state from updatedApps
+          inputs: updatedApp.inputs // Preserve input values from updatedApps
+        };
+      }
+      return app;
+    });
+    
+    await writeFile(selectionsFile, JSON.stringify(selections, null, 2));
+    
+    broadcastOutput('Deployment completed successfully\n');
     return newEnvData;
   } catch (error) {
     console.error('Deployment error:', error);
-    broadcastOutput(wss, `Deployment error: ${error.message}\n`);
+    broadcastOutput(`Deployment error: ${error.message}\n`);
     throw error;
   }
 }

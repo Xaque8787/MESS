@@ -9,6 +9,11 @@ export const api = {
     return data;
   },
 
+  async getEnvironment() {
+    const { data } = await axios.get(`${API_URL}/environment`);
+    return data;
+  },
+
   async saveSelections(data: { apps: DockerApp[] }) {
     await axios.post(`${API_URL}/selections`, data);
   },

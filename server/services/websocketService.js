@@ -1,48 +1,63 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 
 let wssInstance = null;
+const clients = new Set();
 
-export function setupWebSocket(server) {
-  const wss = new WebSocketServer({ server });
-  
-  wss.on('connection', (ws) => {
-    console.log('Client connected to WebSocket');
-    
-    // Send initial connection message
-    broadcastOutput(wss, 'Connected to server\n');
-    
-    ws.on('close', () => console.log('Client disconnected from WebSocket'));
-    
-    ws.on('error', (error) => {
-      console.error('WebSocket error:', error);
-      broadcastOutput(wss, `WebSocket error: ${error.message}\n`);
-    });
+export function setupWebSocket(server, path = '/ws') {
+  const wss = new WebSocketServer({ 
+    server, 
+    path,
+    clientTracking: true 
   });
   
+  wss.on('connection', (ws) => {
+    console.log('Client connected');
+    clients.add(ws);
+
+    // Send immediate connection confirmation
+    ws.send(JSON.stringify({ 
+      type: 'output', 
+      data: 'WebSocket connected\n' 
+    }));
+
+    ws.on('close', () => {
+      console.log('Client disconnected');
+      clients.delete(ws);
+    });
+
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      clients.delete(ws);
+    });
+  });
+
   wssInstance = wss;
   return wss;
 }
 
-export function broadcastOutput(wss, data) {
-  const activeWss = wss || wssInstance;
-  if (!activeWss) {
+export function broadcastOutput(data) {
+  if (!wssInstance) {
     console.warn('No WebSocket server instance available');
     return;
   }
 
-  // Ensure data is properly formatted
-  const message = {
-    type: 'output',
-    data: data.toString()
-  };
-
-  activeWss.clients.forEach((client) => {
-    if (client.readyState === WebSocketServer.OPEN) {
-      try {
-        client.send(JSON.stringify(message));
-      } catch (error) {
-        console.error('Failed to send message to client:', error);
-      }
-    }
+  // Ensure data is a string
+  const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+  const message = JSON.stringify({ 
+    type: 'output', 
+    data: text.endsWith('\n') ? text : text + '\n'
   });
+
+  for (const client of clients) {
+    if (client.readyState === WebSocket.OPEN) {
+      try {
+        client.send(message);
+      } catch (error) {
+        console.error('Failed to send to client:', error);
+        clients.delete(client);
+      }
+    } else {
+      clients.delete(client);
+    }
+  }
 }
