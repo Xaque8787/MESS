@@ -11,9 +11,12 @@ interface AppInputsProps {
 }
 
 export function AppInputs({ inputs, onChange, onClick }: AppInputsProps) {
+  // Filter out invisible inputs for UI rendering
+  const visibleInputs = inputs.filter(input => input.visible !== false);
+
   return (
     <div className="space-y-3" onClick={onClick}>
-      {inputs.map((input) => (
+      {visibleInputs.map((input) => (
         <div key={input.title}>
           {input.type === 'conditional-text' ? (
             <ConditionalTextInput

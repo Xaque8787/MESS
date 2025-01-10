@@ -1,0 +1,308 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2024-03-19",
+  "description": "Stable version with working installation order and first-run scripts",
+  "features": [
+    "Proper installation order with explicit ordering",
+    "First-run scripts (up/down) only execute once",
+    "Persistent app configurations",
+    "Working app state management",
+    "Support for local assets in public/images",
+    "Input prerequisites and conditional dependencies",
+    "M3U utility applications"
+  ],
+  "projectStructure": {
+    "root": {
+      "description": "Project root directory",
+      "files": {
+        ".dockerignore": "Docker build exclusion patterns",
+        "docker-compose.yaml": "Docker Compose service definitions",
+        "Dockerfile": "Docker container build instructions",
+        "index.html": "Root HTML template for the React app",
+        "package.json": "Project dependencies and scripts",
+        "postcss.config.js": "PostCSS configuration for Tailwind",
+        "tailwind.config.js": "Tailwind CSS configuration",
+        "tsconfig.json": "TypeScript root configuration",
+        "tsconfig.app.json": "TypeScript app-specific configuration",
+        "tsconfig.node.json": "TypeScript Node-specific configuration",
+        "vite.config.ts": "Vite bundler configuration",
+        "eslint.config.js": "ESLint configuration"
+      },
+      "public/": {
+        "description": "Public assets directory",
+        "files": {
+          "images/": {
+            "description": "Local image assets for app icons",
+            "files": {}
+          }
+        }
+      },
+      "server/": {
+        "description": "Backend server implementation",
+        "files": {
+          "index.js": "Main server entry point, sets up Express and WebSocket servers",
+          "websocket.js": "WebSocket service exports",
+          "services/": {
+            "description": "Core server services",
+            "files": {
+              "deploymentService.js": "Handles app deployment and script execution orchestration",
+              "scriptService.js": "Manages shell script execution and output handling",
+              "websocketService.js": "WebSocket server for real-time deployment updates",
+              "environment.js": "Environment service implementation",
+              "environment/": {
+                "description": "Environment management modules",
+                "files": {
+                  "config.js": "Environment configuration constants",
+                  "fileOperations.js": "File system operations for environment data",
+                  "index.js": "Environment service entry point",
+                  "stateManager.js": "Manages application state updates"
+                }
+              }
+            }
+          }
+        }
+      },
+      "scripts/": {
+        "description": "Shell scripts for app operations",
+        "files": {
+          "entrypoint.js": "Docker container entrypoint script",
+          "utils/": {
+            "description": "Utility scripts",
+            "files": {
+              "format_env.sh": "Environment variable formatting utility",
+              "resolve_host.sh": "Host path resolution utility",
+              "shared_env.sh": "Shared environment variables utility"
+            }
+          },
+          "apps/": {
+            "description": "Application-specific scripts",
+            "files": {
+              "blackhole_app/": {
+                "description": "Blackhole app scripts",
+                "files": {
+                  "blackhole_app.sh": "Installation script",
+                  "blackhole_app_update.sh": "Update script",
+                  "blackhole_app_remove.sh": "Removal script"
+                }
+              },
+              "dashboard/": {
+                "description": "Dashboard app scripts",
+                "files": {
+                  "dashboard.sh": "Installation script",
+                  "dashboard_update.sh": "Update script",
+                  "dashboard_remove.sh": "Removal script"
+                }
+              },
+              "first_run_down/": {
+                "description": "First run finalization scripts",
+                "files": {
+                  "first_run_down.sh": "Finalization script"
+                }
+              },
+              "first_run_up/": {
+                "description": "First run initialization scripts",
+                "files": {
+                  "first_run_up.sh": "Initialization script"
+                }
+              },
+              "media_server/": {
+                "description": "Media server (Jellyfin) scripts",
+                "files": {
+                  "media_server.sh": "Installation script",
+                  "media_server_update.sh": "Update script",
+                  "media_server_remove.sh": "Removal script"
+                }
+              },
+              "m3uparser/": {
+                "description": "M3U Parser scripts",
+                "files": {
+                  "m3uparser.sh": "Installation script",
+                  "m3uparser_update.sh": "Update script",
+                  "m3uparser_remove.sh": "Removal script"
+                }
+              },
+              "prowlarr_app/": {
+                "description": "Prowlarr app scripts",
+                "files": {
+                  "prowlarr_app.sh": "Installation script",
+                  "prowlarr_app_update.sh": "Update script",
+                  "prowlarr_app_remove.sh": "Removal script"
+                }
+              },
+              "radarr_app/": {
+                "description": "Radarr app scripts",
+                "files": {
+                  "radarr_app.sh": "Installation script",
+                  "radarr_app_update.sh": "Update script",
+                  "radarr_app_remove.sh": "Removal script"
+                }
+              },
+              "sonarr_app/": {
+                "description": "Sonarr app scripts",
+                "files": {
+                  "sonarr_app.sh": "Installation script",
+                  "sonarr_app_update.sh": "Update script",
+                  "sonarr_app_remove.sh": "Removal script"
+                }
+              },
+              "threadfin_proxy/": {
+                "description": "Threadfin Proxy scripts",
+                "files": {
+                  "threadfin_proxy.sh": "Installation script",
+                  "threadfin_proxy_update.sh": "Update script",
+                  "threadfin_proxy_remove.sh": "Removal script"
+                }
+              }
+            }
+          }
+        }
+      },
+      "src/": {
+        "description": "Frontend React application",
+        "files": {
+          "App.tsx": "Main React application component",
+          "main.tsx": "Application entry point",
+          "index.css": "Global styles with Tailwind CSS",
+          "vite-env.d.ts": "Vite environment type declarations",
+          "components/": {
+            "description": "React components",
+            "files": {
+              "AppControls.tsx": "App installation and configuration controls",
+              "AppSelector.tsx": "App selection interface",
+              "CategorySection.tsx": "Category grouping component",
+              "ConfirmationDialog.tsx": "Installation confirmation dialog",
+              "ErrorMessage.tsx": "Error display component",
+              "LoadingSpinner.tsx": "Loading indicator",
+              "TerminalOutput.tsx": "Real-time deployment output display",
+              "inputs/": {
+                "description": "Form input components",
+                "files": {
+                  "AppInputs.tsx": "Input container component",
+                  "CheckboxInput.tsx": "Checkbox input component",
+                  "ConditionalTextInput.tsx": "Conditional text input component",
+                  "TextInput.tsx": "Text input component"
+                }
+              }
+            }
+          },
+          "data/": {
+            "description": "Application data and configurations",
+            "files": {
+              "categories.ts": "App category definitions",
+              "initialApps.ts": "Initial app configurations with install order"
+            }
+          },
+          "hooks/": {
+            "description": "React custom hooks",
+            "files": {
+              "useAppSelections.ts": "App selection and state management hook"
+            }
+          },
+          "services/": {
+            "description": "Frontend services",
+            "files": {
+              "api/": {
+                "description": "API communication services",
+                "files": {
+                  "config.ts": "API configuration",
+                  "environment.ts": "Environment API service",
+                  "index.ts": "API service exports",
+                  "selections.ts": "App selections API service"
+                }
+              }
+            }
+          },
+          "types/": {
+            "description": "TypeScript type definitions",
+            "files": {
+              "env.ts": "Environment type definitions",
+              "types.ts": "Common type definitions"
+            }
+          },
+          "utils/": {
+            "description": "Utility functions",
+            "files": {
+              "prerequisiteCheck.ts": "App prerequisite validation"
+            }
+          }
+        }
+      },
+      "data/": {
+        "description": "Application data storage",
+        "files": {
+          "env.json": "Environment state storage",
+          "selections.json": "App selections storage"
+        }
+      },
+      "compose/": {
+        "description": "Docker Compose state directories",
+        "files": {
+          "installed/": {
+            "description": "Installed apps",
+            "files": {
+              "resourcemng/": {
+                "description": "Resource management",
+                "files": {
+                  "resources.yaml": "Resource configuration"
+                }
+              }
+            }
+          },
+          "not_installed/": {
+            "description": "Uninstalled apps",
+            "files": {
+              "blackhole_app/": {
+                "description": "Blackhole app",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "dashboard/": {
+                "description": "Dashboard app",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "media_server/": {
+                "description": "Media server",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "m3uparser/": {
+                "description": "M3U Parser",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "prowlarr_app/": {
+                "description": "Prowlarr",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "radarr_app/": {
+                "description": "Radarr",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "sonarr_app/": {
+                "description": "Sonarr",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              },
+              "threadfin_proxy/": {
+                "description": "Threadfin Proxy",
+                "files": {
+                  "docker-compose.yaml": "Docker Compose configuration"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

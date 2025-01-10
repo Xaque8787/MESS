@@ -34,7 +34,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto py-12 px-4">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Media Essentials Server Setup</h1>
           <p className="text-gray-500 mb-6">
@@ -52,7 +52,7 @@ function App() {
                 key={category}
                 category={category}
                 apps={categoryApps}
-                allApps={apps} // Pass all apps here
+                allApps={apps}
                 onSelect={handleSelect}
                 onInstall={handleInstall}
                 onRemove={handleRemove}

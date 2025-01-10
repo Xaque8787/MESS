@@ -2,6 +2,7 @@ export const APP_CATEGORIES = [
   'MEDIA SERVERS',
   'STARR APPS',
   'DOWNLOAD CLIENTS',
+  'M3U UTILITY',
   'MANAGEMENT',
 ] as const;
 

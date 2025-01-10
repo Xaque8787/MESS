@@ -2,21 +2,41 @@ FROM node:20-alpine as builder
 
 WORKDIR /app
 
-# Install bash and jq for scripts
-RUN apk add --no-cache bash jq
+# Set master key for builder stage
+ENV MASTER_KEY=abcdefghijklmnopqrstuvwx
 
-# Copy package files
+# Install build dependencies first
+RUN apk add --no-cache \
+    bash \
+    jq \
+    python3 \
+    py3-pip \
+    git \
+    docker-cli \
+    docker-compose
+
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy source code and scripts
+# Create required directories
+RUN mkdir -p /app/compose/installed && \
+    mkdir -p /app/compose/not_installed
+
+# Copy source files
 COPY . .
 
-# Make scripts executable
+# Set up Python environment
+RUN python3 -m venv /app/virt_env && \
+    /app/virt_env/bin/pip install --upgrade pip && \
+    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl
+
+# Set file permissions
 RUN chmod +x /app/scripts/entrypoint.js && \
-    find /app/scripts/apps -type f -name "*.sh" -exec chmod +x {} +
+    chmod +x /app/scripts/utils/format_env.sh && \
+    chmod +x /app/scripts/utils/resolve_host.sh && \
+    chmod +x /app/scripts/utils/shared_env.sh && \
+    find /app/scripts/apps -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
 # Build the application
 RUN npm run build
@@ -26,27 +46,49 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install bash and jq for scripts
-RUN apk add --no-cache bash jq
+# Set master key for production stage
+ENV MASTER_KEY=abcdefghijklmnopqrstuvwx
+
+# Install production dependencies
+RUN apk add --no-cache \
+    bash \
+    jq \
+    python3 \
+    py3-pip \
+    git \
+    docker-cli \
+    docker-compose
+
+# Create data directory
+RUN mkdir -p /app/data
 
 # Copy package files and install production dependencies
 COPY package*.json ./
 RUN npm install --production
 
-# Copy built assets, server, and scripts
+# Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/compose ./compose
+COPY --from=builder /app/public ./public
 
-# Ensure scripts are executable in production
+# Copy and set up Python environment
+COPY --from=builder /app/virt_env ./virt_env
+COPY scripts/utils/server_setup-0.0.1-py3-none-any.whl ./scripts/utils/
+RUN python3 -m venv /app/virt_env && \
+    /app/virt_env/bin/pip install --upgrade pip && \
+    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl
+
+# Set file permissions in production stage
 RUN chmod +x /app/scripts/entrypoint.js && \
-    find /app/scripts/apps -type f -name "*.sh" -exec chmod +x {} +
+    chmod +x /app/scripts/utils/format_env.sh && \
+    chmod +x /app/scripts/utils/resolve_host.sh && \
+    chmod +x /app/scripts/utils/shared_env.sh && \
+    find /app/scripts/apps -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
-# Create data directory
-RUN mkdir -p /app/data
-
-# Expose only the backend port
+# Expose port
 EXPOSE 3001
 
-# Start the application
+# Start command
 CMD ["node", "server/index.js"]

@@ -20,6 +20,7 @@ export default defineConfig({
       },
     },
   },
+  publicDir: 'public', // Explicitly set public directory
   build: {
     outDir: 'dist',
     sourcemap: true

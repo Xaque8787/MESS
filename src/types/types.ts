@@ -1,28 +1,29 @@
+export interface InputPrereq {
+  appId: string;
+  inputTitle: string;
+  value: string | boolean;
+}
+
 export interface AppInput {
   title: string;
   type: 'text' | 'checkbox' | 'conditional-text';
   required: boolean;
+  description?: string;
   placeholder?: string;
   value?: string | boolean;
+  visible?: boolean;
+  quoteValue?: boolean;
+  isPassword?: boolean;
+  prereqs?: InputPrereq[];
   dependentField?: {
     title: string;
+    description?: string;
     placeholder?: string;
     value?: string;
     required: boolean;
+    visible?: boolean;
+    quoteValue?: boolean;
+    isPassword?: boolean;
+    prereqs?: InputPrereq[];
   };
-}
-
-export interface DockerApp {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  selected: boolean;
-  initialized?: boolean;
-  pendingRemoval?: boolean;
-  pendingUpdate?: boolean;
-  pendingInstall?: boolean;
-  prereqs?: string[]; // Changed from string to string[]
-  iconUrl?: string;  // Added support for custom icons
-  inputs?: AppInput[];
 }

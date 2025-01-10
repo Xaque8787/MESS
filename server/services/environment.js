@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { broadcastOutput } from './websocketService.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '../../data');
@@ -10,6 +9,7 @@ const ENV_FILE = path.join(DATA_DIR, 'env.json');
 const defaultEnvironment = {
   version: '1.0',
   lastUpdated: new Date().toISOString(),
+  isFirstRun: true,
   apps: {},
 };
 
@@ -37,14 +37,10 @@ export const environmentService = {
     try {
       await fs.writeFile(
         ENV_FILE,
-        JSON.stringify(
-          {
-            ...data,
-            lastUpdated: new Date().toISOString()
-          },
-          null,
-          2
-        )
+        JSON.stringify({
+          ...data,
+          lastUpdated: new Date().toISOString()
+        }, null, 2)
       );
     } catch (error) {
       console.error('Error writing environment:', error);
@@ -52,48 +48,44 @@ export const environmentService = {
     }
   },
 
-  async updateAppStates(apps, environment, wss) {
-    console.log('Updating app states:', { apps, environment });
-    broadcastOutput(wss, 'Updating application states...\n');
-
+  async updateAppStates(apps, environment) {
     const currentEnv = await this.readEnvironment();
     const updatedEnv = {
       ...currentEnv,
-      apps: {}
+      apps: { ...currentEnv.apps }
     };
 
-    // Process app states and configurations
+    // Process each app's state and config
     apps.forEach(app => {
-      // Preserve existing config for initialized apps that aren't being removed
-      const existingConfig = currentEnv.apps[app.id]?.config || {};
-      const shouldPreserveConfig = app.initialized && !app.pendingRemoval;
-
-      updatedEnv.apps[app.id] = {
-        initialized: app.initialized,
-        pendingInstall: app.pendingInstall || false,
-        pendingUpdate: app.pendingUpdate || false,
-        pendingRemoval: app.pendingRemoval || false,
-        config: shouldPreserveConfig ? existingConfig : {}
-      };
-
-      // Update config with new values
-      if (app.inputs && !app.pendingRemoval) {
-        app.inputs.forEach(input => {
+      if (app.pendingRemoval) {
+        delete updatedEnv.apps[app.id];
+      } else if (app.pendingInstall || app.pendingUpdate) {
+        const config = {};
+        
+        // Process inputs into config
+        app.inputs?.forEach(input => {
           if (input.type === 'conditional-text' && input.dependentField) {
             if (input.value) {
-              updatedEnv.apps[app.id].config[input.title] = input.value;
-              updatedEnv.apps[app.id].config[input.dependentField.title] = input.dependentField.value;
+              config[input.title] = input.value;
+              config[input.dependentField.title] = input.dependentField.value;
             }
           } else if (input.value !== undefined) {
-            updatedEnv.apps[app.id].config[input.title] = input.value;
+            config[input.title] = input.value;
           }
         });
+
+        updatedEnv.apps[app.id] = {
+          initialized: true,
+          config
+        };
       }
     });
 
-    console.log('Updated environment:', updatedEnv);
-    broadcastOutput(wss, 'Application states updated.\n');
-    
+    // Update isFirstRun flag if this is the first installation
+    if (currentEnv.isFirstRun && apps.some(app => app.pendingInstall)) {
+      updatedEnv.isFirstRun = false;
+    }
+
     await this.writeEnvironment(updatedEnv);
     return updatedEnv;
   }

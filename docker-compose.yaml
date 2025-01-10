@@ -1,21 +1,29 @@
 version: '3.8'
 
 services:
-  docker-app-selector:
+  mess:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: docker-app-selector
+    container_name: mess
     ports:
-      - "3001:3001"  # Single port for both frontend and API
+      - "3001:3001"
     volumes:
-      - ./data:/app/data  # Persist selections and environment variables
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./compose/:/app/compose/
     environment:
       - NODE_ENV=production
+      - MASTER_KEY=abcdefghijklmnopqrstuvwx
     restart: unless-stopped
     networks:
-      - app-network
-
+      messnet:
+        ipv4_address: 172.14.0.10
+    
 networks:
-  app-network:
-    driver: bridge
+  messnet:
+    name: messnet
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.14.0.0/24"

@@ -1,0 +1,157 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2024-03-19",
+  "description": "Stable version with working installation order and first-run scripts",
+  "features": [
+    "Proper installation order with explicit ordering",
+    "First-run scripts (up/down) only execute once",
+    "Persistent app configurations",
+    "Working app state management"
+  ],
+  "projectStructure": {
+    "root": {
+      "description": "Project root directory",
+      "files": {
+        ".dockerignore": "Docker build exclusion patterns",
+        "docker-compose.yaml": "Docker Compose service definitions",
+        "Dockerfile": "Docker container build instructions",
+        "index.html": "Root HTML template for the React app",
+        "package.json": "Project dependencies and scripts",
+        "postcss.config.js": "PostCSS configuration for Tailwind",
+        "tailwind.config.js": "Tailwind CSS configuration",
+        "tsconfig.json": "TypeScript root configuration",
+        "tsconfig.app.json": "TypeScript app-specific configuration",
+        "tsconfig.node.json": "TypeScript Node-specific configuration",
+        "vite.config.ts": "Vite bundler configuration",
+        "eslint.config.js": "ESLint configuration"
+      },
+      "server/": {
+        "description": "Backend server implementation",
+        "files": {
+          "index.js": "Main server entry point, sets up Express and WebSocket servers",
+          "websocket.js": "WebSocket service exports",
+          "services/": {
+            "description": "Core server services",
+            "files": {
+              "deploymentService.js": "Handles app deployment and script execution orchestration",
+              "scriptService.js": "Manages shell script execution and output handling",
+              "websocketService.js": "WebSocket server for real-time deployment updates",
+              "environment.js": "Environment service implementation",
+              "environment/": {
+                "description": "Environment management modules",
+                "files": {
+                  "config.js": "Environment configuration constants",
+                  "fileOperations.js": "File system operations for environment data",
+                  "index.js": "Environment service entry point",
+                  "stateManager.js": "Manages application state updates"
+                }
+              }
+            }
+          }
+        }
+      },
+      "scripts/": {
+        "description": "Shell scripts for app operations",
+        "files": {
+          "entrypoint.js": "Docker container entrypoint script",
+          "apps/": {
+            "description": "Application-specific scripts",
+            "files": {
+              "first_run_up.sh": "First run initialization script",
+              "first_run_down.sh": "First run finalization script",
+              "media_server.sh": "Jellyfin installation script",
+              "media_server_update.sh": "Jellyfin update script",
+              "media_server_remove.sh": "Jellyfin removal script"
+            }
+          }
+        }
+      },
+      "src/": {
+        "description": "Frontend React application",
+        "files": {
+          "App.tsx": "Main React application component",
+          "main.tsx": "Application entry point",
+          "index.css": "Global styles with Tailwind CSS",
+          "vite-env.d.ts": "Vite environment type declarations",
+          "components/": {
+            "description": "React components",
+            "files": {
+              "AppControls.tsx": "App installation and configuration controls",
+              "AppSelector.tsx": "App selection interface",
+              "CategorySection.tsx": "Category grouping component",
+              "ConfirmationDialog.tsx": "Installation confirmation dialog",
+              "ErrorMessage.tsx": "Error display component",
+              "LoadingSpinner.tsx": "Loading indicator",
+              "TerminalOutput.tsx": "Real-time deployment output display",
+              "AppInputs.tsx": "Legacy input component",
+              "inputs/": {
+                "description": "Form input components",
+                "files": {
+                  "AppInputs.tsx": "Input container component",
+                  "CheckboxInput.tsx": "Checkbox input component",
+                  "ConditionalTextInput.tsx": "Conditional text input component",
+                  "TextInput.tsx": "Text input component"
+                }
+              }
+            }
+          },
+          "data/": {
+            "description": "Application data and configurations",
+            "files": {
+              "categories.ts": "App category definitions",
+              "initialApps.ts": "Initial app configurations with install order"
+            }
+          },
+          "hooks/": {
+            "description": "React custom hooks",
+            "files": {
+              "useAppSelections.ts": "App selection and state management hook"
+            }
+          },
+          "services/": {
+            "description": "Frontend services",
+            "files": {
+              "api.ts": "Legacy API service",
+              "api/": {
+                "description": "API communication services",
+                "files": {
+                  "config.ts": "API configuration",
+                  "environment.ts": "Environment API service",
+                  "index.ts": "API service exports",
+                  "selections.ts": "App selections API service"
+                }
+              }
+            }
+          },
+          "types/": {
+            "description": "TypeScript type definitions",
+            "files": {
+              "env.ts": "Environment type definitions",
+              "types.ts": "Common type definitions"
+            }
+          },
+          "utils/": {
+            "description": "Utility functions",
+            "files": {
+              "prerequisiteCheck.ts": "App prerequisite validation"
+            }
+          }
+        }
+      },
+      "data/": {
+        "description": "Application data storage",
+        "files": {
+          "env.json": "Environment state storage",
+          "selections.json": "App selections storage"
+        }
+      },
+      "compose/": {
+        "description": "Docker Compose state directories",
+        "files": {
+          "installed/.gitkeep": "Placeholder for installed apps",
+          "not_installed/.gitkeep": "Placeholder for uninstalled apps"
+        }
+      }
+    }
+  }
+}

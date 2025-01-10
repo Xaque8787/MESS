@@ -1,0 +1,13 @@
+services:
+  volume_initializer:
+    image: alpine
+    container_name: resourcemng
+    volumes:
+      - mounts:/mnt
+    restart: "no"
+    entrypoint: >
+      sh -c "mkdir -p /mnt/jellyfin /mnt/jellyfin/movies /mnt/jellyfin/tv /mnt/remote && echo 'Directories initialized!'"
+
+volumes:
+  mounts:
+    name: mounts

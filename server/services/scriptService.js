@@ -1,26 +1,21 @@
 import { spawn } from 'node:child_process';
-import { join } from 'node:path';
 import { access } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { broadcastOutput } from './websocketService.js';
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const SCRIPTS_DIR = join(__dirname, '../../scripts/apps');
-
-const SCRIPT_TYPES = {
-  install: '',
-  update: '_update',
-  remove: '_remove'
-};
+const SCRIPTS_DIR = join(process.cwd(), 'scripts/apps');
 
 async function getScriptPath(appId, operation) {
   if (typeof appId !== 'string') {
     throw new Error('Invalid appId: must be a string');
   }
   
-  const suffix = SCRIPT_TYPES[operation] || '';
-  const scriptName = `${appId}${suffix}.sh`;
-  const scriptPath = join(SCRIPTS_DIR, scriptName);
+  // New path structure: scripts/apps/<appId>/<appId>[_operation].sh
+  const scriptName = operation === 'install' 
+    ? `${appId}.sh`
+    : `${appId}_${operation}.sh`;
+  
+  const scriptPath = join(SCRIPTS_DIR, appId, scriptName);
 
   try {
     await access(scriptPath);
@@ -39,7 +34,7 @@ async function executeScript(scriptPath, appConfig) {
     const child = spawn('/bin/bash', [scriptPath], {
       env: {
         ...process.env,
-        APP_CONFIG: JSON.stringify(appConfig)
+        APP_CONFIG: JSON.stringify(appConfig || {})
       }
     });
 
@@ -54,8 +49,8 @@ async function executeScript(scriptPath, appConfig) {
 
     child.stderr.on('data', (data) => {
       const text = data.toString();
-      console.error(`Script error: ${text}`);
-      broadcastOutput(`Error: ${text}\n`);
+      console.error(text); // Removed "Script error:" prefix
+      broadcastOutput(text); // Pass through stderr output as-is
     });
 
     child.on('error', (error) => {
@@ -67,6 +62,7 @@ async function executeScript(scriptPath, appConfig) {
     child.on('close', (code) => {
       console.log(`Script exited with code ${code}`);
       broadcastOutput(`Script exited with code ${code}\n`);
+      
       if (code === 0) {
         resolve(output);
       } else {

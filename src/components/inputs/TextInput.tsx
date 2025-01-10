@@ -13,8 +13,11 @@ export function TextInput({ input, onChange }: TextInputProps) {
         {input.title}
         {input.required && <span className="text-red-500 ml-1">*</span>}
       </label>
+      {input.description && (
+        <p className="text-sm text-gray-500 mb-2">{input.description}</p>
+      )}
       <input
-        type="text"
+        type={input.isPassword ? "password" : "text"}
         value={(input.value as string) || ''}
         onChange={(e) => onChange(e.target.value)}
         placeholder={input.placeholder}
