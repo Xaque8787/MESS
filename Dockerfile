@@ -28,8 +28,9 @@ COPY . .
 
 # Set up Python environment
 RUN python3 -m venv /app/virt_env && \
-    /app/virt_env/bin/pip install --upgrade pip && \
-    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl
+    /app/virt_env/bin/pip install --upgrade pip --timeout 100 --retries 5 && \
+    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl --timeout 100 --retries 5
+
 
 # Set file permissions
 RUN chmod +x /app/scripts/entrypoint.js && \
@@ -77,8 +78,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/virt_env ./virt_env
 COPY scripts/utils/server_setup-0.0.1-py3-none-any.whl ./scripts/utils/
 RUN python3 -m venv /app/virt_env && \
-    /app/virt_env/bin/pip install --upgrade pip && \
-    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl
+    /app/virt_env/bin/pip install --upgrade pip --timeout 100 --retries 5 && \
+    /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl --timeout 100 --retries 5
+
 
 # Set file permissions in production stage
 RUN chmod +x /app/scripts/entrypoint.js && \

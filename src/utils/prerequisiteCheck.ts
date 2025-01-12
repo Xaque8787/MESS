@@ -44,7 +44,7 @@ export function checkInputPrerequisites(
     if (!prereqApp || (!prereqApp.initialized && !prereqApp.pendingInstall)) {
       return {
         isValid: false,
-        message: `${prereq.appId} must be installed first`
+        message: `${prereq.appId} must be installed first to enable this option`
       };
     }
 
@@ -53,7 +53,7 @@ export function checkInputPrerequisites(
     if (!prereqInput || prereqInput.value !== prereq.value) {
       return {
         isValid: false,
-        message: `${prereqApp.name} must have ${prereq.inputTitle} set to ${prereq.value}`
+        message: `${prereqApp.name} must have "${prereq.inputTitle}" enabled to use this option`
       };
     }
   }

@@ -1,2 +1,29 @@
-version: '3.8'
 services:
+  
+  threadfin:
+    image: fyb3roptik/threadfin:latest
+    container_name: threadfin
+    ports:
+      - ${port:-34400}:34400
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${HOST_PATH}/installed/threadfin_proxy/data/conf:/home/threadfin/conf/data
+      - ${HOST_PATH}/installed/threadfin_proxy/data/tmp:/tmp/threadfin:rw
+      - mounts:/mnt
+    restart: unless-stopped
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.4
+
+networks:
+  messnet:
+    external: true
+    name: messnet
+
+volumes:
+  mounts:
+    external: true
+    name: mounts

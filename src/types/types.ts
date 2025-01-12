@@ -6,6 +6,7 @@ export interface InputPrereq {
 
 export interface AppInput {
   title: string;
+  envName: string;
   type: 'text' | 'checkbox' | 'conditional-text';
   required: boolean;
   description?: string;
@@ -17,6 +18,7 @@ export interface AppInput {
   prereqs?: InputPrereq[];
   dependentField?: {
     title: string;
+    envName: string;
     description?: string;
     placeholder?: string;
     value?: string;

@@ -18,13 +18,14 @@ services:
     restart: unless-stopped
     networks:
       messnet:
-        ipv4_address: 172.14.0.11
+        ipv4_address: 10.21.12.3
 
 networks:
   messnet:
     external: true
+    name: messnet
 
 volumes:
   mounts:
-    external:
-      name: mounts
+    external: true
+    name: mounts

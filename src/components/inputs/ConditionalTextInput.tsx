@@ -3,20 +3,24 @@ import { AppInput } from '../../types/types';
 
 interface ConditionalTextInputProps {
   input: AppInput;
-  onChange: (title: string, value: string | boolean, dependentValue?: string) => void;
+  onChange: (value: string | boolean, dependentValue?: string) => void;
 }
 
 export function ConditionalTextInput({ input, onChange }: ConditionalTextInputProps) {
   const handleCheckboxChange = (checked: boolean) => {
-    onChange(input.title, checked);
-    if (!checked && input.dependentField) {
-      onChange(input.dependentField.title, '', '');
+    // When unchecking, clear both the checkbox and dependent field
+    if (!checked) {
+      onChange(false);
+    } else {
+      // When checking, just set the checkbox to true
+      onChange(true, input.dependentField?.value || '');
     }
   };
 
   const handleTextChange = (value: string) => {
     if (input.dependentField) {
-      onChange(input.title, true, value);
+      // Keep checkbox checked and update dependent value
+      onChange(true, value);
     }
   };
 

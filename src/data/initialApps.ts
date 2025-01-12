@@ -24,36 +24,42 @@ export const initialApps: DockerApp[] = [
     iconUrl: 'https://raw.githubusercontent.com/jellyfin/jellyfin-web/refs/heads/master/src/favicon.png',
     inputs: [
       {
-      title: 'server_ip',
-      type: 'text',
-      required: false,
-      value: 'http://172.14.0.11:8096',
-      visible: false  // This input won't show in UI but will be included in .env
+        title: 'Server IP',
+        envName: 'server_ip',
+        type: 'text',
+        required: false,
+        value: 'http://10.21.12.3:8096',
+        visible: false
       },
       {
         title: 'Admin User',
+        envName: 'AdminUser',
         type: 'text',
         required: true,
         placeholder: 'Enter a username for the Admin user'
       },
       {
         title: 'Admin Password',
+        envName: 'AdminPassword',
         type: 'text',
         required: true,
         isPassword: true,
         placeholder: 'Enter a password for the Admin user'
       },
       {
-        title: 'enableTranscoding',
+        title: 'Enable Transcoding',
+        envName: 'ENABLE_TRANSCODING',
         type: 'checkbox',
         required: false
       },
       {
-        title: 'mediaPath',
+        title: 'Add Media Path',
+        envName: 'ADD_MEDIA_PATH',
         type: 'conditional-text',
         required: false,
         dependentField: {
           title: 'Media Path',
+          envName: 'MEDIA_PATH',
           placeholder: 'Enter media path on host',
           required: true
         }
@@ -73,6 +79,7 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'M3U URL',
+        envName: 'M3U_URL',
         type: 'text',
         required: true,
         quoteValue: true,
@@ -80,12 +87,14 @@ export const initialApps: DockerApp[] = [
       },
       {
         title: 'Run Interval',
+        envName: 'RUN_INTERVAL',
         type: 'text',
         required: false,
         placeholder: 'Enter a interval in hours for each parser run'
       },
       {
-        title: 'enable LiveTV',
+        title: 'Enable LiveTV',
+        envName: 'ENABLE_LIVETV',
         type: 'checkbox',
         required: false
       }
@@ -104,23 +113,62 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Username',
+        envName: 'thread_user',
         type: 'text',
         required: true,
         placeholder: 'Enter username'
       },
       {
         title: 'Password',
+        envName: 'thread_pass',
         type: 'text',
+        isPassword: true,
         required: true,
+        
         placeholder: 'Enter password'
       },
       {
+        title: 'm3u URLS',
+        envName: 'M3U_URL',
+        type: 'text',
+        description: 'Can be multiple urls seperated by comma',
+        required: true,
+        quoteValue: true,
+        placeholder: 'Enter m3u URLS'
+      },
+      {
+        title: 'EPG URLS',
+        envName: 'EPG_URL',
+        type: 'text',
+        description: 'Can be multiple urls seperated by comma',
+        required: true,
+        quoteValue: true,
+        placeholder: 'Enter EPG URLS'
+      },
+      {
+        title: 'Host_ip',
+        envName: 'host',
+        type: 'text',
+        required: false,
+        value: '10.21.12.4',
+        visible: false
+      },
+      {
+        title: 'Port',
+        envName: 'port',
+        type: 'text',
+        required: false,
+        value: '34400',
+        visible: false
+      },
+      {
         title: 'Use parsed livetv.m3u from parser',
+        envName: 'USE_PARSED_LIVETV',
         type: 'checkbox',
         required: false,
         prereqs: [{
           appId: 'm3uparser',
-          inputTitle: 'enable LiveTV',
+          inputTitle: 'Enable LiveTV',
           value: true
         }]
       }
@@ -137,7 +185,8 @@ export const initialApps: DockerApp[] = [
     visible: true,
     inputs: [
       {
-        title: 'port',
+        title: 'Port',
+        envName: 'SONARR_PORT',
         type: 'text',
         required: true,
         isPassword: true,
@@ -145,6 +194,7 @@ export const initialApps: DockerApp[] = [
       },
       {
         title: 'Enable Basic Auth',
+        envName: 'SONARR_BASIC_AUTH',
         type: 'checkbox',
         required: false
       }
@@ -162,12 +212,14 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Port',
+        envName: 'RADARR_PORT',
         type: 'text',
         required: true,
         placeholder: 'Enter desired port'
       },
       {
         title: 'Enable Basic Auth',
+        envName: 'RADARR_BASIC_AUTH',
         type: 'checkbox',
         required: false
       }
@@ -186,12 +238,14 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Port',
+        envName: 'PROWLARR_PORT',
         type: 'text',
         required: true,
         placeholder: 'Enter desired port'
       },
       {
         title: 'Enable Basic Auth',
+        envName: 'PROWLARR_BASIC_AUTH',
         type: 'checkbox',
         required: false
       }
@@ -209,26 +263,31 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'TorBox',
+        envName: 'ENABLE_TORBOX',
         type: 'conditional-text',
         required: false,
         dependentField: {
           title: 'TorBox API Key',
+          envName: 'TORBOX_API_KEY',
           placeholder: 'Enter TorBox API key',
           required: true
         }
       },
       {
         title: 'RealDebrid',
+        envName: 'ENABLE_REALDEBRID',
         type: 'conditional-text',
         required: false,
         dependentField: {
           title: 'RealDebrid API Key',
+          envName: 'REALDEBRID_API_KEY',
           placeholder: 'Enter RealDebrid API key',
           required: true
         }
       },
       {
         title: 'Allow un-cached',
+        envName: 'ALLOW_UNCACHED',
         type: 'checkbox',
         required: false
       }
@@ -247,12 +306,14 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Title',
+        envName: 'DASHBOARD_TITLE',
         type: 'text',
         required: true,
         placeholder: 'Enter a title for your Dashboard'
       },
       {
-        title: 'enableMetrics',
+        title: 'Enable Metrics',
+        envName: 'ENABLE_METRICS',
         type: 'checkbox',
         required: false
       }

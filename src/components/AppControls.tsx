@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, Trash2, Download } from 'lucide-react';
 import { DockerApp } from '../types/types';
 import { AppInputs } from './inputs/AppInputs';
-import { checkPrerequisites, checkInputPrerequisites } from '../utils/prerequisiteCheck';
+import { checkPrerequisites } from '../utils/prerequisiteCheck';
 import { ErrorMessage } from './ErrorMessage';
 
 interface AppControlsProps {
@@ -48,31 +48,14 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
     });
   };
 
-  const checkAllPrerequisites = () => {
-    // Check app-level prerequisites
-    const appCheck = checkPrerequisites(app, allApps);
-    if (!appCheck.isValid) {
-      return appCheck;
-    }
-
-    // Check input-level prerequisites
-    if (app.inputs) {
-      for (const input of app.inputs) {
-        const inputCheck = checkInputPrerequisites(input, allApps);
-        if (!inputCheck.isValid) {
-          return inputCheck;
-        }
-        
-        // Check dependent field prerequisites if it exists
-        if (input.type === 'conditional-text' && input.dependentField?.prereqs) {
-          const dependentCheck = checkInputPrerequisites(input.dependentField, allApps);
-          if (!dependentCheck.isValid) {
-            return dependentCheck;
-          }
-        }
+  const checkAppPrerequisites = () => {
+    // Only check app-level prerequisites
+    if (app.prereqs && app.prereqs.length > 0) {
+      const appCheck = checkPrerequisites(app, allApps);
+      if (!appCheck.isValid) {
+        return appCheck;
       }
     }
-
     return { isValid: true };
   };
 
@@ -82,7 +65,7 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
   };
 
   const handleInstall = () => {
-    const prereqCheck = checkAllPrerequisites();
+    const prereqCheck = checkAppPrerequisites();
     if (!prereqCheck.isValid) {
       setPrerequisiteError(prereqCheck.message || 'Prerequisite check failed');
       return;
@@ -116,6 +99,7 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
               }
             })
           }))}
+          allApps={allApps}
           onChange={handleInputChange}
           onClick={(e) => e.stopPropagation()}
         />

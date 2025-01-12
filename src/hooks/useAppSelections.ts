@@ -211,6 +211,7 @@ export function useAppSelections() {
           config: {}
         };
 
+        // Write original values to config
         app.inputs?.forEach(input => {
           if (input.type === 'conditional-text' && input.dependentField) {
             if (input.value) {
@@ -223,8 +224,10 @@ export function useAppSelections() {
         });
       });
 
+      // Save original values first
       await selectionsApi.saveSelections({ apps });
       await environmentApi.initializeApps({ apps, environment: envData });
+      
       await loadSelections();
       setPendingChanges({ installs: [], removals: [], updates: [] });
       setShowConfirmation(false);
