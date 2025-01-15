@@ -6,15 +6,17 @@ This currently is a work in progress and only exists as a proof of concept. The 
 
 
 
-![i](./imgs/test_img.png)
+![i](./imgs/full_page.png)
 
-![](./imgs/test_img3.png)
+![](./imgs/jelly_install.png)
 
-![](./imgs/test_img5.png)
+![](./imgs/arr_install.png)
 
-![](./imgs/test_img7.png)
+![](./imgs/confirm.png)
 
+![](./imgs/updateremove.png)
 
+![](./imgs/terminal.png)
 
 ###### What will MESS do?
 
@@ -34,10 +36,3 @@ The initial apps that plan to be available are:
 
 **Management Tools**: Dockge, Dashy, Threadfin, guide2go (schedules direct), m3uparaser (parse VOD content from m3u to create .strm files)
 
-###### Philosophy (Why?)
-
-One of the problems I often see people having when setting up their own servers is that there are a lot of moving pieces with all the docker containers being ran. Each container needs its own bind mounts, but some mount locations need to be accessible to multiple containers, and then throw in docker networks where some containers need to be able to talk to other containers, and it can get overwhelming. It additionally becomes more confusing when the guides people are following use different or sometimes ambiguous host paths in their examples.
-
-The idea here is to eliminate (where possible) using bind mounts and instead used managed volumes. The good things about using managed volumes is that they make any compose file pretty much ready to spin up without needing any user to define host paths to configs or other persistent data. They can allow for a more portable kind of compose file. The downside is that not everyone wants to store their media in a docker managed volume, so to accommodate this, the web ui will allow you to pass host paths if you want.
-
-With that being said - the goal of this set up is to store no amount of hard copies of media files on your actual drive. This set up should ideally utilize two outside services. A iptv subscription that contains VOD content, and some kind debrid service like Torbox or RealDebrid. By utilizing the m3uparser container to create a .strm library from a m3u url, you can have a huge library in Jellyfin where the only space being taken up on your drive is the metadata Jellyfin stores. A .strm library from a parsed IPTV VOD url, which contains ~10,000 movies and ~3,000 TV series takes up about 60 gigs of metadata when its all been imported. You then combine jellyseerr + arrs + blackhole + debrid + rclone for any additional content and you can have a huge library of media without the need for terabytes of drive space. In this scenario using managed volumes to store media can make a lot of sense as it gives us the benefit of not needing the user define any volume mounts for blackholes, rclone, sonarr/radarr. It can all work magically behind the scenes.
