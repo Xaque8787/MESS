@@ -21,7 +21,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
-    iconUrl: 'https://raw.githubusercontent.com/jellyfin/jellyfin-web/refs/heads/master/src/favicon.png',
+    iconUrl: '/images/jellyfin.png',
     inputs: [
       {
         title: 'Server IP',
@@ -75,7 +75,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
-    iconUrl: 'https://raw.githubusercontent.com/Xaque8787/m3uparser/refs/heads/main/parser/assets/other_img/m3u_ico256.png',
+    iconUrl: '/images/m3uparser.png',
     inputs: [
       {
         title: 'M3U URL',
@@ -109,7 +109,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
-    iconUrl: 'https://raw.githubusercontent.com/Threadfin/Threadfin/refs/heads/main/html/img/threadfin.ico',
+    iconUrl: '/images/threadfin.ico',
     inputs: [
       {
         title: 'Username',
@@ -183,6 +183,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
+    iconUrl: '/images/sonarr.png',
     inputs: [
       {
         title: 'Port',
@@ -203,12 +204,13 @@ export const initialApps: DockerApp[] = [
   {
     id: 'radarr_app',
     name: 'Radarr',
-    installOrder: 3,
+    installOrder: 2.1,
     description: 'Movie management application',
     category: 'STARR APPS',
     selected: false,
     initialized: false,
     visible: true,
+    iconUrl: '/images/radarr.png',
     inputs: [
       {
         title: 'Port',
@@ -228,13 +230,14 @@ export const initialApps: DockerApp[] = [
   {
     id: 'prowlarr_app',
     name: 'Prowlarr',
-    installOrder: 4,
+    installOrder: 2.2,
     description: 'Index management application',
     category: 'STARR APPS',
     selected: false,
     initialized: false,
     visible: true,
     prereqs: ['sonarr_app', 'radarr_app'],
+    iconUrl: '/images/prowlarr.png',
     inputs: [
       {
         title: 'Port',
@@ -252,6 +255,59 @@ export const initialApps: DockerApp[] = [
     ]
   },
   {
+    id: 'recyclarr_app',
+    name: 'Reyclarr',
+    installOrder: 2.3,
+    description: 'Movie management application',
+    category: 'STARR APPS',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/recyclarr.png',
+    inputs: [
+      {
+        title: 'Port',
+        envName: 'RECYCLARR_PORT',
+        type: 'text',
+        required: true,
+        placeholder: 'Enter desired port'
+      },
+      {
+        title: 'Enable Basic Auth',
+        envName: 'RADARR_BASIC_AUTH',
+        type: 'checkbox',
+        required: false
+      }
+    ]
+  },
+  {
+    id: 'jellyseerr_app',
+    name: 'Jellyseerr',
+    installOrder: 2.5,
+    description: 'Media request application',
+    category: 'STARR APPS',
+    selected: false,
+    initialized: false,
+    visible: true,
+    prereqs: ['sonarr_app', 'radarr_app'],
+    iconUrl: '/images/jellyseerr.png',
+    inputs: [
+      {
+        title: 'Port',
+        envName: 'JELLYSEERR_PORT',
+        type: 'text',
+        required: true,
+        placeholder: 'Enter desired port'
+      },
+      {
+        title: 'Enable Basic Auth',
+        envName: 'JELLYSEERR_BASIC_AUTH',
+        type: 'checkbox',
+        required: false
+      }
+    ]
+  },
+  {
     id: 'blackhole_app',
     name: 'Blackhole',
     installOrder: 5,
@@ -260,6 +316,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
+    iconUrl: '/images/black-hole.svg',
     inputs: [
       {
         title: 'TorBox',
@@ -294,6 +351,80 @@ export const initialApps: DockerApp[] = [
     ]
   },
   {
+    id: 'sabnzbd',
+    name: 'SABNZBD',
+    installOrder: 5.1,
+    description: 'SAB download client for usenet',
+    category: 'DOWNLOAD CLIENTS',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/sabnzbd.ico',
+    inputs: [
+      {
+        title: 'Newsgroup Server',
+        envName: 'NEWS_SERVER',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Port',
+        envName: 'NEWS_PORT',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Save to host',
+        envName: 'SAVE_TO_HOST',
+        type: 'conditional-text',
+        required: false,
+        dependentField: {
+          title: 'Host media path',
+          envName: 'HOST_MEDIA_PATH',
+          placeholder: 'Enter path on host to save media',
+          required: true
+        }
+      }
+    ]
+  },
+  {
+    id: 'qbittorrent',
+    name: 'QbitTorrent',
+    installOrder: 5.2,
+    description: 'Torrent download client',
+    category: 'DOWNLOAD CLIENTS',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/qbit.png',
+    inputs: [
+      {
+        title: 'Server Host IP',
+        envName: 'HOST_IP',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Host Port',
+        envName: 'HOST_PORT',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Save to host',
+        envName: 'SAVE_TO_HOST',
+        type: 'conditional-text',
+        required: false,
+        dependentField: {
+          title: 'Host media path',
+          envName: 'HOST_MEDIA_PATH',
+          placeholder: 'Enter path on host to save media',
+          required: true
+        }
+      }
+    ]
+  },
+  {
     id: 'dashboard',
     name: 'Dashy Dashboard',
     installOrder: 6,
@@ -303,6 +434,7 @@ export const initialApps: DockerApp[] = [
     initialized: false,
     visible: true,
     prereqs: ['media_server'],
+    iconUrl: '/images/dashy.png',
     inputs: [
       {
         title: 'Title',
@@ -310,6 +442,40 @@ export const initialApps: DockerApp[] = [
         type: 'text',
         required: true,
         placeholder: 'Enter a title for your Dashboard'
+      },
+      {
+        title: 'Enable Metrics',
+        envName: 'ENABLE_METRICS',
+        type: 'checkbox',
+        required: false
+      }
+    ]
+  },
+  {
+    id: 'dockge',
+    name: 'Dockge',
+    installOrder: 6.2,
+    description: 'Monitor your containers',
+    category: 'MANAGEMENT',
+    selected: false,
+    initialized: false,
+    visible: true,
+    prereqs: [],
+    iconUrl: '/images/dockge.png',
+    inputs: [
+      {
+        title: 'Username',
+        envName: 'DOCKGE_USER',
+        type: 'text',
+        required: true,
+        placeholder: 'Enter a username for your Dockge instance'
+      },
+      {
+        title: 'Password',
+        envName: 'DOCKGE_PASS',
+        type: 'text',
+        required: true,
+        placeholder: 'Enter a password for your Dockge instance'
       },
       {
         title: 'Enable Metrics',
