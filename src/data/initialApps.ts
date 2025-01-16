@@ -57,12 +57,13 @@ export const initialApps: DockerApp[] = [
         envName: 'ADD_MEDIA_PATH',
         type: 'conditional-text',
         required: false,
-        dependentField: {
+        dependentField: [{
           title: 'Media Path',
           envName: 'MEDIA_PATH',
+          type: 'text',
           placeholder: 'Enter media path on host',
           required: true
-        }
+        }]
       }
     ]
   },
@@ -124,7 +125,6 @@ export const initialApps: DockerApp[] = [
         type: 'text',
         isPassword: true,
         required: true,
-        
         placeholder: 'Enter password'
       },
       {
@@ -224,6 +224,50 @@ export const initialApps: DockerApp[] = [
         envName: 'RADARR_BASIC_AUTH',
         type: 'checkbox',
         required: false
+      },
+      {
+        title: 'Enable Feature',
+        envName: 'ENABLE_FEATURE',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'API Key',
+            envName: 'API_KEY',
+            type: 'text',
+            placeholder: 'Enter API key',
+            required: true,
+            isPassword: true
+          },
+          {
+            title: 'Enable Debug',
+            envName: 'DEBUG_MODE',
+            type: 'checkbox',
+            required: false
+          },
+          {
+            title: 'Server URL',
+            envName: 'SERVER_URL',
+            type: 'text',
+            placeholder: 'Enter server URL',
+            required: true,
+            quoteValue: true
+          },
+          {
+            title: 'Testin',
+            envName: 'Test_URL',
+            type: 'text',
+            description: 'Yo this is description',
+            placeholder: 'Enter server URL',
+            required: false,
+            prereqs: [{
+              appId: 'm3uparser',
+              inputTitle: 'Enable LiveTV',
+              value: true
+            }],
+            quoteValue: true
+          }
+        ]
       }
     ]
   },
@@ -323,24 +367,26 @@ export const initialApps: DockerApp[] = [
         envName: 'ENABLE_TORBOX',
         type: 'conditional-text',
         required: false,
-        dependentField: {
+        dependentField: [{
           title: 'TorBox API Key',
           envName: 'TORBOX_API_KEY',
+          type: 'text',
           placeholder: 'Enter TorBox API key',
           required: true
-        }
+        }]
       },
       {
         title: 'RealDebrid',
         envName: 'ENABLE_REALDEBRID',
         type: 'conditional-text',
         required: false,
-        dependentField: {
+        dependentField: [{
           title: 'RealDebrid API Key',
           envName: 'REALDEBRID_API_KEY',
+          type: 'text',
           placeholder: 'Enter RealDebrid API key',
           required: true
-        }
+        }]
       },
       {
         title: 'Allow un-cached',
@@ -378,12 +424,13 @@ export const initialApps: DockerApp[] = [
         envName: 'SAVE_TO_HOST',
         type: 'conditional-text',
         required: false,
-        dependentField: {
+        dependentField: [{
           title: 'Host media path',
           envName: 'HOST_MEDIA_PATH',
+          type: 'text',
           placeholder: 'Enter path on host to save media',
           required: true
-        }
+        }]
       }
     ]
   },
@@ -415,12 +462,13 @@ export const initialApps: DockerApp[] = [
         envName: 'SAVE_TO_HOST',
         type: 'conditional-text',
         required: false,
-        dependentField: {
+        dependentField: [{
           title: 'Host media path',
           envName: 'HOST_MEDIA_PATH',
+          type: 'text',
           placeholder: 'Enter path on host to save media',
           required: true
-        }
+        }]
       }
     ]
   },

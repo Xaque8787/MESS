@@ -23,25 +23,23 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
       app.inputs.forEach(input => {
         initialValues[input.title] = input.value ?? '';
         if (input.type === 'conditional-text' && input.dependentField) {
-          initialValues[input.dependentField.title] = input.dependentField.value ?? '';
+          input.dependentField.forEach(field => {
+            initialValues[field.title] = field.value ?? (field.type === 'checkbox' ? false : '');
+          });
         }
       });
       setInputValues(initialValues);
     }
   }, [app]);
 
-  const handleInputChange = (title: string, value: string | boolean, dependentValue?: string) => {
+  const handleInputChange = (title: string, value: string | boolean, dependentValues?: Record<string, string | boolean>) => {
     setInputValues(prev => {
-      const newValues = {
-        ...prev,
-        [title]: value
-      };
+      const newValues = { ...prev, [title]: value };
       
-      if (dependentValue !== undefined) {
-        const input = app.inputs?.find(i => i.title === title);
-        if (input?.dependentField) {
-          newValues[input.dependentField.title] = dependentValue;
-        }
+      if (dependentValues) {
+        Object.entries(dependentValues).forEach(([key, val]) => {
+          newValues[key] = val;
+        });
       }
       
       return newValues;
@@ -49,7 +47,6 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
   };
 
   const checkAppPrerequisites = () => {
-    // Only check app-level prerequisites
     if (app.prereqs && app.prereqs.length > 0) {
       const appCheck = checkPrerequisites(app, allApps);
       if (!appCheck.isValid) {
@@ -75,8 +72,14 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
   };
 
   const isInstallDisabled = app.inputs?.some(input => {
-    if (input.type === 'conditional-text' && input.value && input.dependentField?.required) {
-      return !inputValues[input.dependentField.title];
+    if (input.type === 'conditional-text' && input.value && input.dependentField) {
+      return input.dependentField.some(field => 
+        field.required && (
+          field.type === 'checkbox' ? 
+            inputValues[field.title] === undefined : 
+            !inputValues[field.title]
+        )
+      );
     }
     return input.required && input.type === 'text' && (!inputValues[input.title] || !(inputValues[input.title] as string).trim());
   }) ?? false;
@@ -93,10 +96,10 @@ export function AppControls({ app, allApps, onInstall, onRemove, onUpdate }: App
             ...input,
             value: inputValues[input.title] ?? input.value ?? '',
             ...(input.dependentField && {
-              dependentField: {
-                ...input.dependentField,
-                value: inputValues[input.dependentField.title] ?? input.dependentField.value ?? ''
-              }
+              dependentField: input.dependentField.map(field => ({
+                ...field,
+                value: inputValues[field.title] ?? field.value ?? (field.type === 'checkbox' ? false : '')
+              }))
             })
           }))}
           allApps={allApps}

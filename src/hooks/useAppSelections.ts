@@ -53,10 +53,10 @@ export function useAppSelections() {
                 return {
                   ...input,
                   value: envApp.config[input.title] ?? input.value,
-                  dependentField: {
-                    ...input.dependentField,
-                    value: envApp.config[input.dependentField.title] ?? input.dependentField.value
-                  }
+                  dependentField: input.dependentField.map(field => ({
+                    ...field,
+                    value: envApp.config[field.title] ?? field.value
+                  }))
                 };
               }
               return {
@@ -109,10 +109,10 @@ export function useAppSelections() {
                 return {
                   ...input,
                   value: inputs[input.title],
-                  dependentField: {
-                    ...input.dependentField,
-                    value: inputs[input.dependentField.title]
-                  }
+                  dependentField: input.dependentField.map(field => ({
+                    ...field,
+                    value: inputs[field.title]
+                  }))
                 };
               }
               return {
@@ -162,10 +162,10 @@ export function useAppSelections() {
                 return {
                   ...input,
                   value: inputs[input.title],
-                  dependentField: {
-                    ...input.dependentField,
-                    value: inputs[input.dependentField.title]
-                  }
+                  dependentField: input.dependentField.map(field => ({
+                    ...field,
+                    value: inputs[field.title]
+                  }))
                 };
               }
               return {
@@ -211,12 +211,15 @@ export function useAppSelections() {
           config: {}
         };
 
-        // Write original values to config
         app.inputs?.forEach(input => {
           if (input.type === 'conditional-text' && input.dependentField) {
             if (input.value) {
               envData[app.id].config[input.title] = input.value;
-              envData[app.id].config[input.dependentField.title] = input.dependentField.value;
+              input.dependentField.forEach(field => {
+                if (field.value !== undefined) {
+                  envData[app.id].config[field.title] = field.value;
+                }
+              });
             }
           } else if (input.value !== undefined) {
             envData[app.id].config[input.title] = input.value;
@@ -224,7 +227,6 @@ export function useAppSelections() {
         });
       });
 
-      // Save original values first
       await selectionsApi.saveSelections({ apps });
       await environmentApi.initializeApps({ apps, environment: envData });
       

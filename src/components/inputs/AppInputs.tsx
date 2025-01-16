@@ -8,7 +8,7 @@ import { checkInputPrerequisites } from '../../utils/prerequisiteCheck';
 interface AppInputsProps {
   inputs: AppInput[];
   allApps: DockerApp[];
-  onChange: (title: string, value: string | boolean, dependentValue?: string) => void;
+  onChange: (title: string, value: string | boolean, dependentValues?: Record<string, string | boolean>) => void;
   onClick: (e: React.MouseEvent) => void;
 }
 
@@ -16,7 +16,7 @@ export function AppInputs({ inputs, allApps, onChange, onClick }: AppInputsProps
   // Filter out invisible inputs for UI rendering
   const visibleInputs = inputs.filter(input => input.visible !== false);
 
-  const handleInputChange = (input: AppInput, value: string | boolean, dependentValue?: string) => {
+  const handleInputChange = (input: AppInput, value: string | boolean, dependentValues?: Record<string, string | boolean>) => {
     // For checkbox inputs with prerequisites, check if they can be enabled
     if (input.type === 'checkbox' && value === true && input.prereqs) {
       const prereqCheck = checkInputPrerequisites(input, allApps);
@@ -25,7 +25,7 @@ export function AppInputs({ inputs, allApps, onChange, onClick }: AppInputsProps
         return;
       }
     }
-    onChange(input.title, value, dependentValue);
+    onChange(input.title, value, dependentValues);
   };
 
   return (
@@ -35,7 +35,8 @@ export function AppInputs({ inputs, allApps, onChange, onClick }: AppInputsProps
           {input.type === 'conditional-text' ? (
             <ConditionalTextInput
               input={input}
-              onChange={(value, dependentValue) => handleInputChange(input, value, dependentValue)}
+              allApps={allApps}
+              onChange={(value, dependentValues) => handleInputChange(input, value, dependentValues)}
             />
           ) : input.type === 'checkbox' ? (
             <CheckboxInput

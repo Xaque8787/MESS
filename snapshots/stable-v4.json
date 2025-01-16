@@ -1,0 +1,229 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2024-03-21",
+  "description": "Stable version with improved conditional inputs and password handling",
+  "features": [
+    "Proper installation order with explicit ordering",
+    "First-run scripts (up/down) only execute once",
+    "Persistent app configurations",
+    "Working app state management",
+    "Support for local assets in public/images",
+    "Input prerequisites and conditional dependencies",
+    "M3U utility applications",
+    "Improved password handling with encryption",
+    "Fixed conditional input behavior",
+    "Proper value quoting in environment files",
+    "Multiple dependent fields support",
+    "Checkbox support in dependent fields",
+    "Improved password masking across all files",
+    "Proper state persistence for all input types",
+    "Enhanced prerequisite checking for dependent fields"
+  ],
+  "projectStructure": {
+    "root": {
+      "description": "Project root directory",
+      "files": {
+        ".dockerignore": "Docker build exclusion patterns",
+        "docker-compose.yaml": "Docker Compose service definitions",
+        "Dockerfile": "Docker container build instructions",
+        "index.html": "Root HTML template for the React app",
+        "package.json": "Project dependencies and scripts",
+        "postcss.config.js": "PostCSS configuration for Tailwind",
+        "tailwind.config.js": "Tailwind CSS configuration",
+        "tsconfig.json": "TypeScript root configuration",
+        "tsconfig.app.json": "TypeScript app-specific configuration",
+        "tsconfig.node.json": "TypeScript Node-specific configuration",
+        "vite.config.ts": "Vite bundler configuration",
+        "eslint.config.js": "ESLint configuration"
+      },
+      "public/": {
+        "description": "Public assets directory",
+        "files": {
+          "images/": {
+            "description": "Local image assets for app icons",
+            "files": {}
+          }
+        }
+      },
+      "server/": {
+        "description": "Backend server implementation",
+        "files": {
+          "index.js": "Main server entry point, sets up Express and WebSocket servers",
+          "websocket.js": "WebSocket service exports",
+          "services/": {
+            "description": "Core server services",
+            "files": {
+              "deploymentService.js": "Handles app deployment and script execution orchestration",
+              "scriptService.js": "Manages shell script execution and output handling",
+              "websocketService.js": "WebSocket server for real-time deployment updates",
+              "environment.js": "Environment service implementation with improved password handling",
+              "environment/": {
+                "description": "Environment management modules",
+                "files": {
+                  "config.js": "Environment configuration constants",
+                  "fileOperations.js": "File system operations for environment data",
+                  "index.js": "Environment service entry point",
+                  "stateManager.js": "Manages application state updates with enhanced input handling"
+                }
+              }
+            }
+          }
+        }
+      },
+      "scripts/": {
+        "description": "Shell scripts for app operations",
+        "files": {
+          "entrypoint.js": "Docker container entrypoint script",
+          "utils/": {
+            "description": "Utility scripts",
+            "files": {
+              "format_env.sh": "Environment variable formatting with improved password encryption",
+              "resolve_host.sh": "Host path resolution utility",
+              "shared_env.sh": "Shared environment variables utility",
+              "app_template.ts": "Comprehensive template for app configuration"
+            }
+          },
+          "apps/": {
+            "description": "Application-specific scripts",
+            "files": {
+              "first_run_up/": "First run initialization scripts",
+              "first_run_down/": "First run finalization scripts",
+              "media_server/": "Media server (Jellyfin) scripts",
+              "m3uparser/": "M3U Parser scripts",
+              "prowlarr_app/": "Prowlarr scripts",
+              "radarr_app/": "Radarr scripts",
+              "sonarr_app/": "Sonarr scripts",
+              "threadfin_proxy/": "Threadfin Proxy scripts",
+              "blackhole_app/": "Blackhole app scripts",
+              "dashboard/": "Dashboard app scripts",
+              "dockge/": "Dockge scripts"
+            }
+          }
+        }
+      },
+      "src/": {
+        "description": "Frontend React application",
+        "files": {
+          "App.tsx": "Main React application component",
+          "main.tsx": "Application entry point",
+          "index.css": "Global styles with Tailwind CSS",
+          "vite-env.d.ts": "Vite environment type declarations",
+          "components/": {
+            "description": "React components",
+            "files": {
+              "AppControls.tsx": "App installation and configuration controls with improved input handling",
+              "AppSelector.tsx": "App selection interface",
+              "CategorySection.tsx": "Category grouping component",
+              "ConfirmationDialog.tsx": "Installation confirmation dialog",
+              "ErrorMessage.tsx": "Error display component",
+              "LoadingSpinner.tsx": "Loading indicator",
+              "TerminalOutput.tsx": "Real-time deployment output display",
+              "inputs/": {
+                "description": "Form input components",
+                "files": {
+                  "AppInputs.tsx": "Input container with enhanced input type support",
+                  "CheckboxInput.tsx": "Checkbox input component",
+                  "ConditionalTextInput.tsx": "Conditional text input with multiple dependent fields",
+                  "TextInput.tsx": "Text input component with password support"
+                }
+              }
+            }
+          },
+          "data/": {
+            "description": "Application data and configurations",
+            "files": {
+              "categories.ts": "App category definitions",
+              "initialApps.ts": "Initial app configurations with enhanced input definitions"
+            }
+          },
+          "hooks/": {
+            "description": "React custom hooks",
+            "files": {
+              "useAppSelections.ts": "App selection hook with improved state management"
+            }
+          },
+          "services/": {
+            "description": "Frontend services",
+            "files": {
+              "api/": {
+                "description": "API communication services",
+                "files": {
+                  "config.ts": "API configuration",
+                  "environment.ts": "Environment API service",
+                  "index.ts": "API service exports",
+                  "selections.ts": "App selections API with enhanced password masking"
+                }
+              }
+            }
+          },
+          "types/": {
+            "description": "TypeScript type definitions",
+            "files": {
+              "env.ts": "Environment type definitions",
+              "types.ts": "Enhanced type definitions with dependent field support"
+            }
+          },
+          "utils/": {
+            "description": "Utility functions",
+            "files": {
+              "prerequisiteCheck.ts": "App prerequisite validation with dependent field support"
+            }
+          }
+        }
+      },
+      "data/": {
+        "description": "Application data storage",
+        "files": {
+          "env.json": "Environment state storage with enhanced password masking",
+          "selections.json": "App selections storage with improved input handling"
+        }
+      },
+      "compose/": {
+        "description": "Docker Compose state directories",
+        "files": {
+          "installed/": "Installed apps",
+          "not_installed/": "Uninstalled apps"
+        }
+      }
+    }
+  },
+  "improvements": {
+    "conditionalInputs": {
+      "description": "Enhanced conditional input handling",
+      "features": [
+        "Support for multiple dependent fields",
+        "Checkbox support in dependent fields",
+        "Proper state persistence",
+        "Enhanced validation",
+        "Prerequisite checking for dependent fields"
+      ]
+    },
+    "passwordHandling": {
+      "description": "Improved password security",
+      "features": [
+        "Consistent password masking across all files",
+        "Encryption in .env files",
+        "Masking in UI and JSON files",
+        "Support for API keys and sensitive data"
+      ]
+    },
+    "stateManagement": {
+      "description": "Enhanced state handling",
+      "features": [
+        "Proper persistence of all input types",
+        "Improved error handling",
+        "Better type safety",
+        "Enhanced validation"
+      ]
+    },
+    "documentation": {
+      "description": "Improved documentation",
+      "features": [
+        "Comprehensive app template",
+        "Detailed type definitions",
+        "Clear examples",
+        "Better code organization"
+      ]
+    }
+  }
+}

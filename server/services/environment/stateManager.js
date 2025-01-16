@@ -26,24 +26,30 @@ export async function updateAppStates(apps, environment, service) {
       // Process inputs into config
       app.inputs?.forEach(input => {
         if (input.type === 'conditional-text' && input.dependentField) {
-          if (input.value) {
-            // Handle main input value
-            config[input.title] = input.quoteValue ? `"${input.value}"` : input.value;
-            // Handle dependent field value
-            const dependentValue = input.dependentField.value;
-            config[input.dependentField.title] = input.dependentField.quoteValue 
-              ? `"${dependentValue}"` 
-              : dependentValue;
+          // Always store the main conditional input value if it exists
+          if (input.value !== undefined) {
+            config[input.title] = input.value;
+            
+            // If the conditional input is true, process all dependent fields
+            if (input.value === true) {
+              input.dependentField.forEach(field => {
+                if (field.value !== undefined) {
+                  config[field.title] = field.value;
+                }
+              });
+            }
           }
         } else if (input.value !== undefined) {
-          // Handle regular input value
-          config[input.title] = input.quoteValue ? `"${input.value}"` : input.value;
+          config[input.title] = input.value;
         }
       });
 
       updatedEnv.apps[app.id] = {
         initialized: true,
-        config: app.id === 'first_run_up' || app.id === 'first_run_down' ? {} : config
+        pendingInstall: app.pendingInstall || false,
+        pendingUpdate: app.pendingUpdate || false,
+        pendingRemoval: app.pendingRemoval || false,
+        config
       };
     }
   });

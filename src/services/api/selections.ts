@@ -11,15 +11,14 @@ function maskSensitiveValues(apps: DockerApp[]): DockerApp[] {
         return {
           ...input,
           value: input.value,
-          dependentField: {
-            ...input.dependentField,
-            value: input.dependentField.isPassword && input.dependentField.value ? 
-              MASKED_VALUE : input.dependentField.value
-          }
+          dependentField: input.dependentField.map(field => ({
+            ...field,
+            value: field.isPassword && field.value ? 
+              MASKED_VALUE : field.value
+          }))
         };
       }
       
-      // Handle regular inputs
       return {
         ...input,
         value: input.isPassword && input.value ? 
@@ -42,7 +41,6 @@ export const selectionsApi = {
 
   async saveSelections(data: { apps: DockerApp[] }) {
     try {
-      // Create a deep copy to avoid modifying the original data
       const maskedData = {
         apps: maskSensitiveValues(JSON.parse(JSON.stringify(data.apps)))
       };

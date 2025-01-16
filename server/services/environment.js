@@ -13,6 +13,8 @@ const defaultEnvironment = {
   apps: {},
 };
 
+const MASKED_VALUE = '********';
+
 export const environmentService = {
   async ensureEnvFile() {
     try {
@@ -49,6 +51,7 @@ export const environmentService = {
   },
 
   async updateAppStates(apps, environment) {
+    console.log('Updating app states with:', { apps, environment });
     const currentEnv = await this.readEnvironment();
     const updatedEnv = {
       ...currentEnv,
@@ -65,17 +68,39 @@ export const environmentService = {
         // Process inputs into config
         app.inputs?.forEach(input => {
           if (input.type === 'conditional-text' && input.dependentField) {
-            if (input.value) {
+            // Store the main conditional input value
+            if (input.value !== undefined) {
               config[input.title] = input.value;
-              config[input.dependentField.title] = input.dependentField.value;
+              
+              // If the conditional input is true, store all dependent field values
+              if (input.value === true) {
+                input.dependentField.forEach(field => {
+                  if (field.value !== undefined) {
+                    // Handle password masking for dependent fields
+                    if (field.isPassword && field.value) {
+                      config[field.title] = MASKED_VALUE;
+                    } else {
+                      config[field.title] = field.value;
+                    }
+                  }
+                });
+              }
             }
           } else if (input.value !== undefined) {
-            config[input.title] = input.value;
+            // Handle password masking for regular inputs
+            if (input.isPassword && input.value) {
+              config[input.title] = MASKED_VALUE;
+            } else {
+              config[input.title] = input.value;
+            }
           }
         });
 
         updatedEnv.apps[app.id] = {
           initialized: true,
+          pendingInstall: app.pendingInstall || false,
+          pendingUpdate: app.pendingUpdate || false,
+          pendingRemoval: app.pendingRemoval || false,
           config
         };
       }
@@ -86,6 +111,7 @@ export const environmentService = {
       updatedEnv.isFirstRun = false;
     }
 
+    console.log('Writing updated environment:', updatedEnv);
     await this.writeEnvironment(updatedEnv);
     return updatedEnv;
   }

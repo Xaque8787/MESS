@@ -27,14 +27,13 @@ mask_json_passwords() {
   local env_file="/app/data/env.json"
   local selections_file="/app/data/selections.json"
   
-  # Mask passwords in env.json
   if [ -f "$env_file" ]; then
     jq '
       walk(
         if type == "object" and .config then
           .config |= with_entries(
             if .value != null and .value != "" and
-               (.key | test("(?i).*password.*")) then
+               (.key | test("(?i).*password.*|.*api.*key.*")) then
               .value = "********"
             else
               .
@@ -47,15 +46,20 @@ mask_json_passwords() {
     ' "$env_file" > "${env_file}.tmp" && mv "${env_file}.tmp" "$env_file"
   fi
   
-  # Mask passwords in selections.json
   if [ -f "$selections_file" ]; then
     jq '
       walk(
         if type == "object" then
           if .isPassword == true and .value != null and .value != "" then
             .value = "********"
-          elif .type == "conditional-text" and .dependentField.isPassword == true and .dependentField.value != null and .dependentField.value != "" then
-            .dependentField.value = "********"
+          elif .type == "conditional-text" and .dependentField then
+            .dependentField |= map(
+              if .isPassword == true and .value != null and .value != "" then
+                .value = "********"
+              else
+                .
+              end
+            )
           else
             .
           end
@@ -70,7 +74,6 @@ mask_json_passwords() {
 format_env_vars() {
   local json_input=$(cat)
   
-  # First, process and write environment variables
   echo "$json_input" | jq -r '
     if .inputs then
       .inputs[] | 
@@ -90,16 +93,13 @@ format_env_vars() {
             isPassword: false,
             quoteValue: false
           },
-          if .dependentField.value != null and .dependentField.value != "" then
-            {
-              key: .dependentField.envName,
-              value: .dependentField.value,
-              isPassword: .dependentField.isPassword,
-              quoteValue: .dependentField.quoteValue
-            }
-          else
-            empty
-          end
+          (.dependentField[] | select(.value != null and .value != "") |
+          {
+            key: .envName,
+            value: .value,
+            isPassword: .isPassword,
+            quoteValue: .quoteValue
+          })
         else
           empty
         end
@@ -116,21 +116,22 @@ format_env_vars() {
       if [[ -n "$key" ]]; then
         cleaned_key=$(clean_key "$key")
         
-        # Handle password fields based on isPassword flag
         if [[ "$isPassword" == "true" ]]; then
           value="${value#\"}"
           value="${value%\"}"
           encrypted_value=$(encrypt_password "$value")
           echo "${cleaned_key}=${encrypted_value}"
         else
-          # Handle quoteValue
           if [[ "$quoteValue" == "true" ]]; then
-            # Ensure value is properly quoted
-            value="${value#\"}"  # Remove leading quote if present
-            value="${value%\"}"  # Remove trailing quote if present
+            value="${value#\"}"
+            value="${value%\"}"
             echo "${cleaned_key}=\"${value}\""
           else
-            echo "${cleaned_key}=${value}"
+            if [[ "$value" == "true" || "$value" == "false" ]]; then
+              echo "${cleaned_key}=${value}"
+            else
+              echo "${cleaned_key}=${value}"
+            fi
           fi
         fi
       fi
@@ -141,7 +142,6 @@ format_env_vars() {
     echo "HOST_PATH=$HOST_VOLUME_MAPPING"
   fi
   
-  # Mask sensitive values in JSON files after env vars are processed
   mask_json_passwords
 }
 
