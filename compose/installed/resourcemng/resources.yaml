@@ -6,7 +6,7 @@ services:
       - mounts:/mnt
     restart: "no"
     entrypoint: >
-      sh -c "mkdir -p /mnt/jellyfin /mnt/jellyfin/movies /mnt/jellyfin/tv /mnt/remote && echo 'Directories initialized!'"
+      sh -c "mkdir -p /mnt/jellyfin /mnt/jellyfin/movies /mnt/jellyfin/tv /mnt/remote && chown -R ${PUID}:${PGID} /mnt && echo 'Directories initialized and ownership set to ${PUID}:${PGID}!'"
 
 volumes:
   mounts:

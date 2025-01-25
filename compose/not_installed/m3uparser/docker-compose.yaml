@@ -1,2 +1,17 @@
-version: '3.8'
 services:
+  m3uparser:
+    container_name: m3uparser
+    image: xaque87/m3uparser_mess:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+    env_file:
+      - .env
+    volumes:
+      - mounts:/mnt  # Access the `mounts` volume for its structure
+    restart: unless-stopped
+    
+volumes:
+  mounts:
+    external: true
+    name: mounts

@@ -18,6 +18,11 @@ sleep 1
 echo "Moving compose directory to installed..."
 mv /app/compose/not_installed/m3uparser /app/compose/installed/
 
+sleep 2
+COMPOSE_FILE_PATH="/app/compose/installed/m3uparser/docker-compose.yaml"
+
+# Run docker-compose up in detached mode
+docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 echo "Step 2: Configuring M3U Parser..."
 sleep 1
 

@@ -95,7 +95,7 @@ export const initialApps: DockerApp[] = [
       },
       {
         title: 'Enable LiveTV',
-        envName: 'ENABLE_LIVETV',
+        envName: 'LIVE_TV',
         type: 'checkbox',
         required: false
       }

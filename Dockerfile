@@ -31,7 +31,6 @@ RUN python3 -m venv /app/virt_env && \
     /app/virt_env/bin/pip install --upgrade pip --timeout 100 --retries 5 && \
     /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl --timeout 100 --retries 5
 
-
 # Set file permissions
 RUN chmod +x /app/scripts/entrypoint.js && \
     chmod +x /app/scripts/utils/format_env.sh && \
@@ -81,16 +80,19 @@ RUN python3 -m venv /app/virt_env && \
     /app/virt_env/bin/pip install --upgrade pip --timeout 100 --retries 5 && \
     /app/virt_env/bin/pip install /app/scripts/utils/server_setup-0.0.1-py3-none-any.whl --timeout 100 --retries 5
 
-
 # Set file permissions in production stage
-RUN chmod +x /app/scripts/entrypoint.js && \
-    chmod +x /app/scripts/utils/format_env.sh && \
+RUN chmod +x /app/scripts/utils/format_env.sh && \
     chmod +x /app/scripts/utils/resolve_host.sh && \
     chmod +x /app/scripts/utils/shared_env.sh && \
     find /app/scripts/apps -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
+# Copy and set up entrypoint script
+COPY scripts/docker-entrypoint.sh /app/scripts/docker-entrypoint.sh
+RUN chmod +x /app/scripts/docker-entrypoint.sh
+
 # Expose port
 EXPOSE 3001
 
-# Start command
+# Set entrypoint and default command
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
 CMD ["node", "server/index.js"]
