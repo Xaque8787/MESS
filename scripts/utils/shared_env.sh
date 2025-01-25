@@ -18,3 +18,9 @@ load_shared_vars() {
         source "$SHARED_ENV_FILE"
     fi
 }
+
+# Function to get system environment variables
+get_system_env_vars() {
+    echo "PUID=${PUID:-1000}"
+    echo "PGID=${PGID:-1000}"
+}

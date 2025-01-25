@@ -74,6 +74,14 @@ mask_json_passwords() {
 format_env_vars() {
   local json_input=$(cat)
   
+  # Write system environment variables first
+  get_system_env_vars
+
+  # Write HOST_PATH if available
+  if [ -n "$HOST_VOLUME_MAPPING" ]; then
+    echo "HOST_PATH=$HOST_VOLUME_MAPPING"
+  fi
+  
   echo "$json_input" | jq -r '
     if .inputs then
       .inputs[] | 
@@ -137,10 +145,6 @@ format_env_vars() {
       fi
     fi
   done
-
-  if [ -n "$HOST_VOLUME_MAPPING" ]; then
-    echo "HOST_PATH=$HOST_VOLUME_MAPPING"
-  fi
   
   mask_json_passwords
 }
