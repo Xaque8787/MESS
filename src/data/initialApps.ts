@@ -565,6 +565,31 @@ export const initialApps: DockerApp[] = [
     ]
   },
   {
+    id: 'wgeasy',
+    name: 'WG-EASY',
+    installOrder: 7.4,
+    description: 'WG Server',
+    category: 'NETWORKING',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/wgeasy.png',
+    inputs: [
+      {
+        title: 'Host',
+        envName: 'WG_HOST',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Password',
+        envName: 'PASSWORD_HASH',
+        type: 'text',
+        required: true
+      }
+    ]
+  },
+  {
     id: 'gluetun_vpn',
     name: 'Gluetun VPN',
     installOrder: 7.1,

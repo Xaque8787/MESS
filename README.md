@@ -20,6 +20,8 @@ This currently is a work in progress and only exists as a proof of concept. The 
 
 ![](./imgs/Networking1.png)
 
+![](./imgs/Networking4.png)
+
 ![](./imgs/Networking2.png)
 
 ![](./imgs/Networking3.png)
