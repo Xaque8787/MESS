@@ -473,6 +473,195 @@ export const initialApps: DockerApp[] = [
     ]
   },
   {
+    id: 'DDNS',
+    name: 'DNS',
+    installOrder: 7.2,
+    description: 'Dynamic DNS update',
+    category: 'NETWORKING',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/dns.png',
+    inputs: [
+      {
+        title: 'DuckDNS',
+        envName: 'DUCK_DNS',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'DuckDNS Token',
+            envName: 'DUCK_DNS_TOKEN',
+            type: 'text',
+            description: 'Your Duckdns.org token',
+            required: true
+          },
+          {
+            title: 'Subdomain 1',
+            envName: 'DUCK_DNS_SUB1',
+            type: 'text',
+            description: 'DuckDNS subdomain',
+            required: false
+          },
+          {
+            title: 'Subdomain 2',
+            envName: 'DUCK_DNS_SUB2',
+            type: 'text',
+            description: 'DuckDNS subdomain',
+            required: false
+          },
+          {
+            title: 'Subdomain 3',
+            envName: 'DUCK_DNS_SUB3',
+            type: 'text',
+            description: 'DuckDNS subdomain',
+            required: false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'caddy',
+    name: 'Caddy',
+    installOrder: 7,
+    description: 'Caddy reverse proxy',
+    category: 'NETWORKING',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: '/images/caddy.png',
+    inputs: [
+      {
+        title: 'Reverse Proxy Apps',
+        envName: 'RPROXY_APP',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'Jellyfin',
+            envName: 'JELLYFIN_RPROXY',
+            type: 'text',
+            description: 'Subdomain for Jellyfin server',
+            required: false,
+            placeholder: 'Subdomain for Jellyfin server',
+            prereqs: [{
+              appId: 'media_server'
+            }]
+          },
+          {
+            title: 'Jellyseerr',
+            envName: 'JELLYSEERR_RPROXY',
+            type: 'text',
+            description: 'Subdomain for Jellyseerr instance',
+            required: false,
+            placeholder: 'Subdomain for Jellyseerr instance',
+            prereqs: [{
+              appId: 'media_server'
+            }]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'gluetun_vpn',
+    name: 'Gluetun VPN',
+    installOrder: 7.1,
+    description: 'VPN for containers',
+    category: 'NETWORKING',
+    selected: false,
+    initialized: false,
+    visible: true,
+    iconUrl: 'https://raw.githubusercontent.com/qdm12/gluetun/refs/heads/master/title.svg',
+    inputs: [
+      {
+        title: 'VPN Provider',
+        envName: 'VPN_SERVICE_PROVIDER',
+        type: 'text',
+        required: true
+      },
+      {
+        title: 'Wiregaurd VPN',
+        envName: 'WG_VPN_CONFIG',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'Private Key',
+            envName: 'WIREGUARD_PRIVATE_KEY',
+            type: 'text',
+            description: 'Wiregaurd private key',
+            required: true
+          },
+          {
+            title: 'Wireguard address',
+            envName: 'WIREGUARD_ADDRESSES',
+            type: 'text',
+            required: true,
+            description: 'Wireguard address'
+          },
+          {
+            title: 'WG type',
+            envName: 'VPN_TYPE',
+            type: 'text',
+            required: false,
+            value: 'wireguard',
+            visible: false,
+          }]
+      },
+      {
+        title: 'Open VPN',
+        envName: 'OPEN_VPN_CONFIG',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'OpenVPN type',
+            envName: 'VPN_TYPE',
+            type: 'text',
+            required: false,
+            value: 'openvpn',
+            visible: false
+          },
+          {
+            title: 'OpenVPN user',
+            envName: 'OPENVPN_USER',
+            type: 'text',
+            required: true,
+            placeholder: 'Username'
+          },
+          {
+            title: 'OpenVPN password',
+            envName: 'OPENVPN_PASS',
+            type: 'text',
+            required: true,
+            placeholder: 'Password'
+          }]
+      },
+      {
+        title: 'SABNZBD',
+        envName: 'SAB_VPN',
+        type: 'checkbox',
+        required: false,
+        description: 'VPN for SABNZBD',
+        prereqs: [{
+              appId: 'sabnzbd'
+            }]
+      },
+      {
+        title: 'QbitTorrent',
+        envName: 'QBIT_VPN',
+        type: 'checkbox',
+        required: false,
+        description: 'VPN for QbitTorrent',
+        prereqs: [{
+              appId: 'qbittorrent'
+            }]
+      }
+    ]
+  },
+  {
     id: 'dashboard',
     name: 'Dashy Dashboard',
     installOrder: 6,

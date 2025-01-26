@@ -3,6 +3,7 @@ export const APP_CATEGORIES = [
   'STARR APPS',
   'DOWNLOAD CLIENTS',
   'M3U UTILITY',
+  'NETWORKING',
   'MANAGEMENT',
 ] as const;
 

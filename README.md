@@ -18,6 +18,12 @@ This currently is a work in progress and only exists as a proof of concept. The 
 
 ![](./imgs/terminal.png)
 
+![](./imgs/Networking1.png)
+
+![](./imgs/Networking2.png)
+
+![](./imgs/Networking3.png)
+
 ###### What will MESS do?
 
 **M**edia **E**ssentials **S**erver **S**etup aims to help setting up a media server by exposing a web ui to select applications to install (EVERYTHING IS IN DOCKER, NO BARE METAL). It will allow you to pass any necessary configuation settings, as well as use set up scripts, to avoid as much user interaction as possible.
