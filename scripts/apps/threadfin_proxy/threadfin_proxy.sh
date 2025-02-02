@@ -29,10 +29,7 @@ sleep 10
 source /app/virt_env/bin/activate
 
 sleep 15
-# Execute the Python script as a module
-python3 -m server_setup.setup_threadfin
 
-deactivate
 echo "Step 3: Starting services..."
 sleep 1
 

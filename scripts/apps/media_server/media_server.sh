@@ -17,7 +17,10 @@ sleep 2
 # Move compose directory from not_installed to installed
 echo "Moving compose directory to installed..."
 mv /app/compose/not_installed/media_server /app/compose/installed/
-
+HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.config."ADD_MEDIA_PATH" // false')
+if [ "$HOST_PATH_ENABLED" = "true" ]; then
+  cp /app/compose/overrides/media_server/compose.override.yaml /app/compose/installed/media_server
+fi
 echo "Step 2: Configuring Jellyfin..."
 sleep 2
 echo "Step 2: Configuring Jellyfin..."
@@ -27,14 +30,11 @@ COMPOSE_FILE_PATH="/app/compose/installed/media_server/docker-compose.yaml"
 # Run docker-compose up in detached mode
 docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 sleep 10
-# Activate the virtual environment
-source /app/virt_env/bin/activate
 
 sleep 45
 # Execute the Python script as a module
 python3 -m server_setup.setup_server
 
-deactivate
 echo "Step 3: Starting services..."
 sleep 2
 

@@ -57,13 +57,28 @@ export const initialApps: DockerApp[] = [
         envName: 'ADD_MEDIA_PATH',
         type: 'conditional-text',
         required: false,
-        dependentField: [{
-          title: 'Media Path',
-          envName: 'MEDIA_PATH',
-          type: 'text',
-          placeholder: 'Enter media path on host',
-          required: true
-        }]
+        dependentField: [
+          {
+            title: 'Media Root Path',
+            envName: 'HOST_ROOT',
+            type: 'text',
+            placeholder: 'Enter media path on host',
+            required: true
+          },
+          {
+            title: 'Movie Folder Name',
+            envName: 'HOST_MOVIE',
+            type: 'text',
+            placeholder: 'Enter media path on host',
+            required: true
+          },
+          {
+            title: 'Media Root Path',
+            envName: 'HOST_TV',
+            type: 'text',
+            placeholder: 'Enter media path on host',
+            required: true
+          }]
       }
     ]
   },
