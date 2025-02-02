@@ -19,7 +19,7 @@ echo "Moving compose directory to installed..."
 mv /app/compose/not_installed/media_server /app/compose/installed/
 HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add Media Path") | .value // false')
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
-  cp /app/compose/overrides/media_server/compose.override.yaml /app/compose/installed/media_server
+  cp -v /app/compose/overrides/media_server/compose.override.yaml /app/compose/installed/media_server/compose.override.yaml
 fi
 echo "Step 2: Configuring Jellyfin..."
 sleep 2
