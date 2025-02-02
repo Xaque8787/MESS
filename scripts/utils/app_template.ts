@@ -42,6 +42,7 @@ export const templateApp: DockerApp = {
       visible: true,                     // Whether to show in UI
       quoteValue: false,                 // Whether to quote value in .env file
       isPassword: false,                 // Whether to mask value
+      enable_override: false,            // Whether to enable override compose file
       prereqs: [{                        // Optional prerequisites
         appId: 'other_app',             // Required app ID
         inputTitle: 'Other Input',       // Required input from other app
@@ -56,7 +57,8 @@ export const templateApp: DockerApp = {
       type: 'checkbox',
       required: false,
       description: 'Enable special feature',
-      value: false
+      value: false,
+      enable_override: false             // Whether to enable override compose file
     },
 
     // Conditional text with dependent fields
@@ -67,6 +69,7 @@ export const templateApp: DockerApp = {
       required: false,
       description: 'Enable advanced configuration',
       value: false,
+      enable_override: false,            // Whether to enable override compose file
       dependentField: [
         // Text dependent field
         {
@@ -78,6 +81,7 @@ export const templateApp: DockerApp = {
           required: true,
           isPassword: true,              // Will be masked in UI and files
           quoteValue: true,              // Will be quoted in .env file
+          enable_override: false,        // Whether to enable override compose file
           value: ''
         },
         // Checkbox dependent field
@@ -87,6 +91,7 @@ export const templateApp: DockerApp = {
           type: 'checkbox',
           description: 'Enable debugging',
           required: false,
+          enable_override: true,         // Will enable docker-compose.override.yaml when true
           value: false
         },
         // Dependent field with prerequisites
@@ -98,6 +103,7 @@ export const templateApp: DockerApp = {
           placeholder: 'https://...',
           required: true,
           quoteValue: true,
+          enable_override: false,        // Whether to enable override compose file
           prereqs: [{
             appId: 'other_app',
             inputTitle: 'Other Feature',
@@ -112,7 +118,7 @@ export const templateApp: DockerApp = {
 
 /**
  * Example of how the app configuration appears in different files:
- * 
+ *
  * 1. Environment (.env) file:
  * BASIC_INPUT=value
  * FEATURE_ENABLED=true
@@ -120,6 +126,7 @@ export const templateApp: DockerApp = {
  * API_KEY=<encrypted_value>
  * DEBUG_MODE=true
  * SERVER_URL="https://example.com"
+ * COMPOSE_FILE=docker-compose.yaml:docker-compose.override.yaml  # Added when enable_override is true
  * 
  * 2. Environment (env.json) file:
  * {

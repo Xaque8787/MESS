@@ -16,6 +16,7 @@ export interface DependentField {
   isPassword?: boolean;
   prereqs?: InputPrereq[];
   type: 'text' | 'checkbox';
+  enable_override?: boolean;
 }
 
 export interface AppInput {
@@ -31,6 +32,7 @@ export interface AppInput {
   isPassword?: boolean;
   prereqs?: InputPrereq[];
   dependentField?: DependentField[];
+  enable_override?: boolean;
 }
 
 export interface DockerApp {

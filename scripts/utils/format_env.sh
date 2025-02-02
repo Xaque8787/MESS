@@ -73,7 +73,22 @@ mask_json_passwords() {
 
 format_env_vars() {
   local json_input=$(cat)
-  
+  local needs_override=false
+
+  # Check for enable_override in both top-level inputs and dependent fields
+  if echo "$json_input" | jq -e '
+    .inputs | any(
+      .enable_override == true or
+      (
+        .type == "conditional-text" and
+        .value == true and
+        (.dependentField | arrays | any(.enable_override == true and .value == true))
+      )
+    )
+  ' > /dev/null 2>&1; then
+    needs_override=true
+  fi
+
   # Write system environment variables first
   get_system_env_vars
 
@@ -81,15 +96,30 @@ format_env_vars() {
   if [ -n "$HOST_VOLUME_MAPPING" ]; then
     echo "HOST_PATH=$HOST_VOLUME_MAPPING"
   fi
-  
+
+  # Write COMPOSE_FILE if override is needed
+  if [ "$needs_override" = true ]; then
+    echo "COMPOSE_FILE=docker-compose.yaml:docker-compose.override.yaml"
+  fi
+
+  # Process inputs and write environment variables
   echo "$json_input" | jq -r '
+    def process_value:
+      if type == "boolean" then
+        tostring
+      elif type == "number" then
+        tostring
+      else
+        .
+      end;
+
     if .inputs then
-      .inputs[] | 
+      .inputs[] |
       if .type != "conditional-text" then
         select(.value != null and .value != "") |
         {
           key: .envName,
-          value: .value,
+          value: (.value | process_value),
           isPassword: .isPassword,
           quoteValue: .quoteValue
         }
@@ -101,10 +131,10 @@ format_env_vars() {
             isPassword: false,
             quoteValue: false
           },
-          (.dependentField[] | select(.value != null and .value != "") |
+          (.dependentField[]? | select(.value != null and .value != "") |
           {
             key: .envName,
-            value: .value,
+            value: (.value | process_value),
             isPassword: .isPassword,
             quoteValue: .quoteValue
           })
