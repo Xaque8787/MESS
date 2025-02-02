@@ -32,9 +32,11 @@ docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 sleep 10
 
 sleep 45
+source /app/virt_env/bin/activate
 # Execute the Python script as a module
 python3 -m server_setup.setup_server
 
+deactivate
 echo "Step 3: Starting services..."
 sleep 2
 

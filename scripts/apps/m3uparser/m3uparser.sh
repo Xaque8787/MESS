@@ -25,7 +25,9 @@ COMPOSE_FILE_PATH="/app/compose/installed/m3uparser/docker-compose.yaml"
 docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 echo "Step 2: Configuring M3U Parser..."
 sleep 15
+source /app/virt_env/bin/activate
 python3 -m server_setup.m3uparser.add_media_library
+deactivate
 echo "Step 3: Starting services..."
 sleep 1
 
