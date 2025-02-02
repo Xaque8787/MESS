@@ -20,7 +20,7 @@ mv -v /app/compose/not_installed/media_server /app/compose/installed/
 sleep 3
 HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add Media Path") | .value // false')
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
-  mv -vf /app/compose/overrides/media_server/compose.override.yaml /app/compose/installed/media_server/compose.override.yaml
+  mv -vf /app/compose/overrides/media_server/docker-compose.override.yaml /app/compose/installed/media_server/docker-compose.override.yaml
 fi
 
 
