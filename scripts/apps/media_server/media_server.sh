@@ -18,22 +18,24 @@ sleep 2
 echo "Moving compose directory to installed..."
 mv -v /app/compose/not_installed/media_server /app/compose/installed/
 sleep 3
+
+COMPOSE_FILE_PATH="/app/compose/installed/media_server/docker-compose.yaml"
+OVERRIDE_FILE_PATH="/app/compose/installed/media_server/docker-compose.override.yaml"
+
 HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add Media Path") | .value // false')
+
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
-  mv -vf /app/compose/overrides/media_server/docker-compose.override.yaml /app/compose/installed/media_server/docker-compose.override.yaml
+  echo "Host path enabled. Using override file..."
+  mv -vf /app/compose/overrides/media_server/docker-compose.override.yaml "$OVERRIDE_FILE_PATH"
+  docker compose -f "$COMPOSE_FILE_PATH" -f "$OVERRIDE_FILE_PATH" up -d --wait
+else
+  echo "No override file. Starting container normally..."
+  docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 fi
 
-
-echo "Step 2: Configuring Jellyfin..."
-sleep 2
-echo "Step 2: Configuring Jellyfin..."
-sleep 2
-COMPOSE_FILE_PATH="/app/compose/installed/media_server/docker-compose.yaml"
-
-# Run docker-compose up in detached mode
-docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 sleep 45
 source /app/virt_env/bin/activate
+
 # Execute the Python script as a module
 python3 -m server_setup.setup_server
 
