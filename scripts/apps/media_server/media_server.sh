@@ -17,7 +17,7 @@ sleep 2
 # Move compose directory from not_installed to installed
 echo "Moving compose directory to installed..."
 mv /app/compose/not_installed/media_server /app/compose/installed/
-HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.config."ADD_MEDIA_PATH" // false')
+HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add Media Path") | .value // false')
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
   cp /app/compose/overrides/media_server/compose.override.yaml /app/compose/installed/media_server
 fi
