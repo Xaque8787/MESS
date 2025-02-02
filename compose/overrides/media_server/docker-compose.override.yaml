@@ -1,6 +1,4 @@
 services:
   jellyfin:
-    command: ["/bin/sh", "-c", "mkdir -p /data/movies /data/tvshows && exec jellyfin"]
     volumes:
-      - ${HOST_ROOT}/${HOST_MOVIE}/:/data/movies/
-      - ${HOST_ROOT}/${HOST_TV}/:/data/tvshows/
+      - ${HOST_ROOT}/:/data
