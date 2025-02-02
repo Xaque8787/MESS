@@ -22,7 +22,6 @@ services:
       messnet:
         ipv4_address: 10.21.12.2
 
-    user: "1000:1000"
     privileged: true
     
 networks:
