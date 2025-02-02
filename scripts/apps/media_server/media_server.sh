@@ -32,8 +32,10 @@ COMPOSE_FILE_PATH="/app/compose/installed/media_server/docker-compose.yaml"
 
 # Run docker-compose up in detached mode
 docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
+sleep 5
+docker compose -f "$COMPOSE_FILE_PATH" down
 sleep 10
-
+docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 sleep 45
 source /app/virt_env/bin/activate
 # Execute the Python script as a module
