@@ -21,7 +21,8 @@ RUN npm install
 
 # Create required directories
 RUN mkdir -p /app/compose/installed && \
-    mkdir -p /app/compose/not_installed
+    mkdir -p /app/compose/not_installed && \
+    mkdir -p /app/compose/overrides
 
 # Copy source files
 COPY . .
