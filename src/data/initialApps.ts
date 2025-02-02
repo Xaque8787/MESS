@@ -73,7 +73,7 @@ export const initialApps: DockerApp[] = [
             required: true
           },
           {
-            title: 'Media Root Path',
+            title: 'TV Folder Name',
             envName: 'HOST_TV',
             type: 'text',
             placeholder: 'Enter media path on host',
