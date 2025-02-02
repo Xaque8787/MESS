@@ -21,8 +21,6 @@ services:
     networks:
       messnet:
         ipv4_address: 10.21.12.2
-
-    privileged: true
     
 networks:
   messnet:
