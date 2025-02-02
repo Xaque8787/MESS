@@ -1,5 +1,5 @@
 services:
   jellyfin:
     volumes:
-      - ${HOST_ROOT}/${HOST_MOVIE}:/mnt/host_library/movies
-      - ${HOST_ROOT}/${HOST_TV}:/mnt/host_library/tv
+      - ${HOST_ROOT}/${HOST_MOVIE}/:/mnt/host_library/movies
+      - ${HOST_ROOT}/${HOST_TV}/:/mnt/host_library/tv
