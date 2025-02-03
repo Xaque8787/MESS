@@ -27,7 +27,7 @@ HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add 
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
   echo "Host path enabled. Using override file..."
   mv -vf /app/compose/overrides/media_server/docker-compose.override.yaml "$OVERRIDE_FILE_PATH"
-  docker compose -f "$COMPOSE_FILE_PATH" -f "$OVERRIDE_FILE_PATH" up -d --wait
+  docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
 else
   echo "No override file. Starting container normally..."
   docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
