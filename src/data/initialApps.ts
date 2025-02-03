@@ -56,6 +56,7 @@ export const initialApps: DockerApp[] = [
         title: 'Add Media Path',
         envName: 'ADD_MEDIA_PATH',
         type: 'conditional-text',
+        enable_override: true,
         required: false,
         dependentField: [
           {

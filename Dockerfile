@@ -13,7 +13,8 @@ RUN apk add --no-cache \
     py3-pip \
     git \
     docker-cli \
-    docker-compose
+    docker-compose \
+    coreutils
 
 # Copy package files and install dependencies
 COPY package*.json ./
@@ -58,7 +59,8 @@ RUN apk add --no-cache \
     py3-pip \
     git \
     docker-cli \
-    docker-compose
+    docker-compose \
+    coreutils
 
 # Create data directory
 RUN mkdir -p /app/data
