@@ -303,7 +303,7 @@ export const initialApps: DockerApp[] = [
         envName: 'PROWLARR_IP',
         type: 'text',
         required: false,
-        value: 'localhost',
+        value: '10.21.12.10',
         visible: false
       },
       {
