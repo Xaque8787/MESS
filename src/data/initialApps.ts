@@ -299,6 +299,14 @@ export const initialApps: DockerApp[] = [
     iconUrl: '/images/prowlarr.png',
     inputs: [
       {
+        title: 'Prowlarr IP',
+        envName: 'PROWLARR_IP',
+        type: 'text',
+        required: false,
+        value: 'http://10.21.12.10',
+        visible: false
+      },
+      {
         title: 'Port',
         envName: 'PROWLARR_PORT',
         type: 'text',
