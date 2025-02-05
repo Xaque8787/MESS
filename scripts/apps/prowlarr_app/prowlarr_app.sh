@@ -20,7 +20,7 @@ mv /app/compose/not_installed/prowlarr_app /app/compose/installed/
 
 echo "Step 2: Configuring Prowlarr..."
 sleep 1
-COMPOSE_FILE_PATH="/app/compose/installed/prowlarr/"
+COMPOSE_FILE_PATH="/app/compose/installed/prowlarr_app/"
 
 # Run docker-compose up in detached mode
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
