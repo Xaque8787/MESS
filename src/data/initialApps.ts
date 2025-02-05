@@ -311,6 +311,7 @@ export const initialApps: DockerApp[] = [
         type: 'checkbox',
         required: false
       },
+      {
         title: 'Enable Zilean Indexer',
         envName: 'ENABLE_ZILEAN',
         type: 'conditional-text',
