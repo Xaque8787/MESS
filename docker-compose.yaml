@@ -18,6 +18,3 @@ services:
       - PUID=1000
       - PGID=1000
     restart: unless-stopped
-    networks:
-      messnet:
-        ipv4_address: 10.21.12.2
