@@ -28,7 +28,7 @@ echo "Step 3: Starting services..."
 sleep 9
 sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:PROWLARR_APIKEY=\1:p' /app/compose/installed/prowlarr_app/config/config.xml >> /app/compose/installed/prowlarr_app/.env
 git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
-cp -vrf ./Prowlarr-Indexers/Custom/ /app/compose/installed/prowlarr_app/config/Definitions/Custom
+cp -vrf ./Prowlarr-Indexers/Custom /app/compose/installed/prowlarr_app/config/Definitions/
 source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.prowlarr_setup
 deactivate
