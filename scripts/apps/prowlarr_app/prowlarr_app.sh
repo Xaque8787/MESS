@@ -20,8 +20,17 @@ mv /app/compose/not_installed/prowlarr_app /app/compose/installed/
 
 echo "Step 2: Configuring Prowlarr..."
 sleep 1
+COMPOSE_FILE_PATH="/app/compose/installed/prowlarr/"
 
+# Run docker-compose up in detached mode
+env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 echo "Step 3: Starting services..."
-sleep 1
+sleep 4
+git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
+cp -vrf ./Prowlarr-Indexers/Custom /app/compose/installed/prowlarr_app/configs/Definitions
+source /app/virt_env/bin/activate
+python3 -m server_setup.arrs.prowlarr.prowlarr_setup
+deactivate
+
 
 echo -e "\n✅ Prowlarr installation completed!"

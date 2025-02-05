@@ -8,10 +8,10 @@ echo -e "\nStarting removal..."
 sleep 2
 
 # Define compose file path
-COMPOSE_FILE_PATH="/app/compose/installed/media_server/docker-compose.yaml"
+COMPOSE_FILE_PATH="/app/compose/installed/media_server/"
 
 echo "Step 1: Stopping services..."
-docker compose -f "$COMPOSE_FILE_PATH" down
+env -C "$COMPOSE_FILE_PATH" docker compose down
 
 echo "Step 2: Removing container..."
 docker rm jellyfin

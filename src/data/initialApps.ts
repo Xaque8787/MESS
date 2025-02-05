@@ -296,7 +296,6 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
-    prereqs: ['sonarr_app', 'radarr_app'],
     iconUrl: '/images/prowlarr.png',
     inputs: [
       {
@@ -311,6 +310,17 @@ export const initialApps: DockerApp[] = [
         envName: 'PROWLARR_BASIC_AUTH',
         type: 'checkbox',
         required: false
+      },
+        title: 'Enable Zilean Indexer',
+        envName: 'ENABLE_ZILEAN',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'Prefer Magnet Links',
+            envName: 'ZILEAN_PREFER_MAGENT',
+            type: 'checkbox'
+          }]
       }
     ]
   },

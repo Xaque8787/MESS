@@ -1,2 +1,23 @@
-version: '3.8'
 services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ${HOST_PATH}/installed/prowlarr_app/config:/config
+    ports:
+      - "${PROWLARR_PORT:-9696}:9696"
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.10
+
+networks:
+  messnet:
+    external: true
+    name: messnet

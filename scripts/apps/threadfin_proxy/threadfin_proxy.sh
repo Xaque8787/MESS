@@ -20,10 +20,10 @@ mv /app/compose/not_installed/threadfin_proxy /app/compose/installed/
 
 echo "Step 2: Configuring Threadfin Proxy..."
 sleep 1
-COMPOSE_FILE_PATH="/app/compose/installed/threadfin_proxy/docker-compose.yaml"
+COMPOSE_FILE_PATH="/app/compose/installed/threadfin_proxy/"
 
 # Run docker-compose up in detached mode
-docker compose -f "$COMPOSE_FILE_PATH" up -d --wait
+env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 sleep 10
 # Activate the virtual environment
 source /app/virt_env/bin/activate
