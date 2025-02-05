@@ -25,7 +25,8 @@ COMPOSE_FILE_PATH="/app/compose/installed/prowlarr/"
 # Run docker-compose up in detached mode
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 echo "Step 3: Starting services..."
-sleep 4
+sleep 9
+sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:PROWLARR_APIKEY=\1:p' /app/compose/installed/prowlarr_app/config.xml >> /app/compose/installed/prowlarr_app/.env
 git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
 cp -vrf ./Prowlarr-Indexers/Custom /app/compose/installed/prowlarr_app/configs/Definitions
 source /app/virt_env/bin/activate
