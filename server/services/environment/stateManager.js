@@ -17,32 +17,18 @@ export async function updateAppStates(apps, environment, service) {
       return;
     }
 
-    // Special handling for every-run scripts - don't persist their initialized state
-    if (app.id === 'run_up' || app.id === 'run_down') {
-      updatedEnv.apps[app.id] = {
-        initialized: false, // Always keep initialized as false
-        pendingInstall: true, // Always keep pending install as true
-        pendingUpdate: false,
-        pendingRemoval: false,
-        config: {} // These scripts typically don't need config
-      };
-      return;
-    }
-
     if (app.pendingRemoval) {
       // Remove app config on removal
       delete updatedEnv.apps[app.id];
     } else if (app.pendingInstall || app.pendingUpdate) {
       const config = {};
-      
+
       // Process inputs into config
       app.inputs?.forEach(input => {
         if (input.type === 'conditional-text' && input.dependentField) {
-          // Always store the main conditional input value if it exists
           if (input.value !== undefined) {
             config[input.title] = input.value;
-            
-            // If the conditional input is true, process all dependent fields
+
             if (input.value === true) {
               input.dependentField.forEach(field => {
                 if (field.value !== undefined) {
@@ -57,8 +43,8 @@ export async function updateAppStates(apps, environment, service) {
       });
 
       updatedEnv.apps[app.id] = {
-        initialized: true,
-        pendingInstall: app.pendingInstall || false,
+        initialized: app.id !== 'run_up' && app.id !== 'run_down', // Keep run scripts uninitialized
+        pendingInstall: app.id === 'run_up' || app.id === 'run_down' ? true : app.pendingInstall || false,
         pendingUpdate: app.pendingUpdate || false,
         pendingRemoval: app.pendingRemoval || false,
         config
@@ -70,6 +56,17 @@ export async function updateAppStates(apps, environment, service) {
   if (isFirstRun && apps.some(app => app.pendingInstall)) {
     updatedEnv.isFirstRun = false;
   }
+
+  // Always ensure run scripts are in the correct state
+  ['run_up', 'run_down'].forEach(scriptId => {
+    updatedEnv.apps[scriptId] = {
+      initialized: false,
+      pendingInstall: true,
+      pendingUpdate: false,
+      pendingRemoval: false,
+      config: {}
+    };
+  });
 
   console.log('Updated environment:', updatedEnv);
   await service.writeEnvironment(updatedEnv);
