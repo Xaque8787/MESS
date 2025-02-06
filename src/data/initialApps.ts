@@ -18,7 +18,7 @@ export const initialApps: DockerApp[] = [
     description: 'Setup script that runs before every deployment',
     category: 'SYSTEM',
     selected: false,
-    initialized: true, // Set to true so it's not treated as a first-time install
+    initialized: false,
     pendingInstall: true,
     installOrder: 0, // Run before everything
     visible: false
@@ -799,7 +799,7 @@ export const initialApps: DockerApp[] = [
     description: 'Setup script that runs before every deployment',
     category: 'SYSTEM',
     selected: false,
-    initialized: true, // Set to true so it's not treated as a first-time install
+    initialized: false,
     pendingInstall: true,
     installOrder: 1000, // Run before everything
     visible: false
