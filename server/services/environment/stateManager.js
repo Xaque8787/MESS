@@ -7,13 +7,35 @@ export async function updateAppStates(apps, environment, service) {
     apps: { ...currentEnv.apps }
   };
 
+  // First, handle run scripts - ALWAYS set them to uninitialized state
+  updatedEnv.apps['run_up'] = {
+    initialized: false,
+    pendingInstall: true,
+    pendingUpdate: false,
+    pendingRemoval: false,
+    config: {}
+  };
+
+  updatedEnv.apps['run_down'] = {
+    initialized: false,
+    pendingInstall: true,
+    pendingUpdate: false,
+    pendingRemoval: false,
+    config: {}
+  };
+
   // Check if this is the first run
   const isFirstRun = currentEnv.isFirstRun;
-  
+
   // Process each app's state and config
   apps.forEach(app => {
     // Skip first run scripts if not first run
     if ((app.id === 'first_run_up' || app.id === 'first_run_down') && !isFirstRun) {
+      return;
+    }
+
+    // Skip run scripts as they're already handled
+    if (app.id === 'run_up' || app.id === 'run_down') {
       return;
     }
 
@@ -43,8 +65,8 @@ export async function updateAppStates(apps, environment, service) {
       });
 
       updatedEnv.apps[app.id] = {
-        initialized: app.id !== 'run_up' && app.id !== 'run_down', // Keep run scripts uninitialized
-        pendingInstall: app.id === 'run_up' || app.id === 'run_down' ? true : app.pendingInstall || false,
+        initialized: true,
+        pendingInstall: app.pendingInstall || false,
         pendingUpdate: app.pendingUpdate || false,
         pendingRemoval: app.pendingRemoval || false,
         config
@@ -56,17 +78,6 @@ export async function updateAppStates(apps, environment, service) {
   if (isFirstRun && apps.some(app => app.pendingInstall)) {
     updatedEnv.isFirstRun = false;
   }
-
-  // Always ensure run scripts are in the correct state
-  ['run_up', 'run_down'].forEach(scriptId => {
-    updatedEnv.apps[scriptId] = {
-      initialized: false,
-      pendingInstall: true,
-      pendingUpdate: false,
-      pendingRemoval: false,
-      config: {}
-    };
-  });
 
   console.log('Updated environment:', updatedEnv);
   await service.writeEnvironment(updatedEnv);
