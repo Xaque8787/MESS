@@ -17,6 +17,18 @@ export async function updateAppStates(apps, environment, service) {
       return;
     }
 
+    // Special handling for every-run scripts - don't persist their initialized state
+    if (app.id === 'run_up' || app.id === 'run_down') {
+      updatedEnv.apps[app.id] = {
+        initialized: false, // Always keep initialized as false
+        pendingInstall: true, // Always keep pending install as true
+        pendingUpdate: false,
+        pendingRemoval: false,
+        config: {} // These scripts typically don't need config
+      };
+      return;
+    }
+
     if (app.pendingRemoval) {
       // Remove app config on removal
       delete updatedEnv.apps[app.id];
