@@ -51,7 +51,6 @@ export const environmentService = {
   },
 
   async updateAppStates(apps, environment) {
-    console.log('Updating app states with:', { apps, environment });
     const currentEnv = await this.readEnvironment();
     const updatedEnv = {
       ...currentEnv,
@@ -60,39 +59,34 @@ export const environmentService = {
 
     // Process each app's state and config
     apps.forEach(app => {
+      // Skip run_up and run_down completely - don't write them to env.json
+      if (app.id === 'run_up' || app.id === 'run_down') {
+        return;
+      }
+
       if (app.pendingRemoval) {
         delete updatedEnv.apps[app.id];
       } else if (app.pendingInstall || app.pendingUpdate) {
         const config = {};
-        
+
         // Process inputs into config
         app.inputs?.forEach(input => {
           if (input.type === 'conditional-text' && input.dependentField) {
-            // Store the main conditional input value
-            if (input.value !== undefined) {
+            if (input.value) {
+              // Store main conditional input value
               config[input.title] = input.value;
-              
-              // If the conditional input is true, store all dependent field values
-              if (input.value === true) {
-                input.dependentField.forEach(field => {
-                  if (field.value !== undefined) {
-                    // Handle password masking for dependent fields
-                    if (field.isPassword && field.value) {
-                      config[field.title] = MASKED_VALUE;
-                    } else {
-                      config[field.title] = field.value;
-                    }
-                  }
-                });
-              }
+
+              // Store dependent field values
+              input.dependentField.forEach(field => {
+                if (field.value !== undefined) {
+                  config[field.title] = field.isPassword && field.value ?
+                    MASKED_VALUE : field.value;
+                }
+              });
             }
           } else if (input.value !== undefined) {
-            // Handle password masking for regular inputs
-            if (input.isPassword && input.value) {
-              config[input.title] = MASKED_VALUE;
-            } else {
-              config[input.title] = input.value;
-            }
+            config[input.title] = input.isPassword && input.value ?
+              MASKED_VALUE : input.value;
           }
         });
 
@@ -106,12 +100,6 @@ export const environmentService = {
       }
     });
 
-    // Update isFirstRun flag if this is the first installation
-    if (currentEnv.isFirstRun && apps.some(app => app.pendingInstall)) {
-      updatedEnv.isFirstRun = false;
-    }
-
-    console.log('Writing updated environment:', updatedEnv);
     await this.writeEnvironment(updatedEnv);
     return updatedEnv;
   }

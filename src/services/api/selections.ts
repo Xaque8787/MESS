@@ -32,6 +32,14 @@ export const selectionsApi = {
   async getSelections() {
     try {
       const { data } = await apiClient.get('/selections');
+
+      // Filter out run scripts from the response
+      if (data.apps) {
+        data.apps = data.apps.filter(
+          app => app.id !== 'run_up' && app.id !== 'run_down'
+        );
+      }
+
       return data;
     } catch (error) {
       console.error('Failed to get selections:', error);
