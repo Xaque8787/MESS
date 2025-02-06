@@ -801,7 +801,7 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     pendingInstall: true,
-    installOrder: 1000, // Run before everything
+    installOrder: 998, // Run before everything
     visible: false
 },
   {

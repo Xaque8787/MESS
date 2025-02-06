@@ -25,7 +25,7 @@ COMPOSE_FILE_PATH="/app/compose/installed/prowlarr_app/"
 # Run docker-compose up in detached mode
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 echo "Step 3: Starting services..."
-sleep 9
+sleep 17
 sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:PROWLARR_APIKEY=\1:p' /app/compose/installed/prowlarr_app/config/config.xml >> /app/compose/installed/prowlarr_app/.env
 git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
 sleep 9
