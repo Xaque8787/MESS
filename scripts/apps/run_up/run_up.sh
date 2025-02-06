@@ -13,5 +13,5 @@ sleep 2
 echo "Step 1: Setting up environment..."
 sleep 1
 
-docker network connect --ip 192.168.1.100 messnet mess
+docker network connect --ip 10.21.12.2 messnet mess
 sleep 2
