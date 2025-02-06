@@ -20,7 +20,7 @@ fi
 
 COMPOSE_FILE_PATH="/app/compose/installed/resourcemng/resources.yaml"
 echo "Creating messnet network for containers"
-# docker network create --subnet=10.21.12.0/26 messnet
+docker network create --subnet=10.21.12.0/26 messnet
 sleep 5
 # Run docker-compose up in detached mode and capture the exit code
 if docker compose -f "$COMPOSE_FILE_PATH" -p resources up -d --wait; then

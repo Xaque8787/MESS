@@ -9,9 +9,20 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     pendingInstall: true,
-    installOrder: 0,
+    installOrder: -1,
     visible: false
   },
+  {
+    id: 'run_up',
+    name: 'Pre-deployment Setup',
+    description: 'Setup script that runs before every deployment',
+    category: 'SYSTEM',
+    selected: false,
+    initialized: true, // Set to true so it's not treated as a first-time install
+    pendingInstall: true,
+    installOrder: 0, // Run before everything
+    visible: false
+},
   {
     id: 'media_server',
     name: 'Jellyfin',
@@ -782,6 +793,17 @@ export const initialApps: DockerApp[] = [
       }
     ]
   },
+  {
+    id: 'run_down',
+    name: 'Pre-deployment Setup',
+    description: 'Setup script that runs before every deployment',
+    category: 'SYSTEM',
+    selected: false,
+    initialized: true, // Set to true so it's not treated as a first-time install
+    pendingInstall: true,
+    installOrder: 1000, // Run before everything
+    visible: false
+},
   {
     id: 'first_run_down',
     name: 'First Run Finalization',
