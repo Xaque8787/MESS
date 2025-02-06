@@ -7,23 +7,6 @@ export async function updateAppStates(apps, environment, service) {
     apps: { ...currentEnv.apps }
   };
 
-  // First, handle run scripts - ALWAYS set them to uninitialized state
-  updatedEnv.apps['run_up'] = {
-    initialized: false,
-    pendingInstall: true,
-    pendingUpdate: false,
-    pendingRemoval: false,
-    config: {}
-  };
-
-  updatedEnv.apps['run_down'] = {
-    initialized: false,
-    pendingInstall: true,
-    pendingUpdate: false,
-    pendingRemoval: false,
-    config: {}
-  };
-
   // Check if this is the first run
   const isFirstRun = currentEnv.isFirstRun;
 
@@ -34,7 +17,7 @@ export async function updateAppStates(apps, environment, service) {
       return;
     }
 
-    // Skip run scripts as they're already handled
+    // Skip persisting run scripts entirely
     if (app.id === 'run_up' || app.id === 'run_down') {
       return;
     }
@@ -48,9 +31,11 @@ export async function updateAppStates(apps, environment, service) {
       // Process inputs into config
       app.inputs?.forEach(input => {
         if (input.type === 'conditional-text' && input.dependentField) {
+          // Always store the main conditional input value if it exists
           if (input.value !== undefined) {
             config[input.title] = input.value;
 
+            // If the conditional input is true, process all dependent fields
             if (input.value === true) {
               input.dependentField.forEach(field => {
                 if (field.value !== undefined) {

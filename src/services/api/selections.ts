@@ -41,9 +41,15 @@ export const selectionsApi = {
 
   async saveSelections(data: { apps: DockerApp[] }) {
     try {
+      // Filter out run scripts before saving
+      const filteredApps = data.apps.filter(
+        app => app.id !== 'run_up' && app.id !== 'run_down'
+      );
+
       const maskedData = {
-        apps: maskSensitiveValues(JSON.parse(JSON.stringify(data.apps)))
+        apps: maskSensitiveValues(JSON.parse(JSON.stringify(filteredApps)))
       };
+
       await apiClient.post('/selections', maskedData);
     } catch (error) {
       console.error('Failed to save selections:', error);
