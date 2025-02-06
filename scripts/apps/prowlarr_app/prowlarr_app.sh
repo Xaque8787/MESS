@@ -32,7 +32,8 @@ while [ ! -f "/app/compose/installed/prowlarr_app/config/config.xml" ]; do
 done
 # Run the sed command once config.xml is detected
 sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:PROWLARR_APIKEY=\1:p' /app/compose/installed/prowlarr_app/config/config.xml >> /app/compose/installed/prowlarr_app/.env
-echo "API key extracted and saved to .env"git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
+echo "API key extracted and saved to .env"
+git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
 sleep 9
 mv -v ./Prowlarr-Indexers/Custom /app/compose/installed/prowlarr_app/config/Definitions/
 source /app/virt_env/bin/activate
