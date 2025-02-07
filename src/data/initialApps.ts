@@ -249,6 +249,7 @@ export const initialApps: DockerApp[] = [
       {
         title: 'Enable Basic Auth',
         envName: 'RADARR_BASIC_AUTH',
+        enable_override: true,
         type: 'checkbox',
         required: false
       },
@@ -278,7 +279,7 @@ export const initialApps: DockerApp[] = [
             type: 'text',
             placeholder: 'Enter server URL',
             required: true,
-            quoteValue: true
+            enable_override: true
           },
           {
             title: 'Testin',

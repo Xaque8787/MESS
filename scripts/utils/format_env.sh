@@ -73,20 +73,28 @@ mask_json_passwords() {
 
 format_env_vars() {
   local json_input=$(cat)
-  local needs_override=false
+  local override_files=()
 
-  # Check for enable_override in both top-level inputs and dependent fields
-  if echo "$json_input" | jq -e '
-    .inputs | any(
-      .enable_override == true or
-      (
-        .type == "conditional-text" and
-        .value == true and
-        (.dependentField | arrays | any(.enable_override == true and .value == true))
-      )
-    )
-  ' > /dev/null 2>&1; then
-    needs_override=true
+  # Process inputs to collect override files
+  if echo "$json_input" | jq -e '.inputs' > /dev/null 2>&1; then
+    while IFS= read -r input; do
+      local enable_override=$(echo "$input" | jq -r '.enable_override // false')
+      local env_name=$(echo "$input" | jq -r '.envName // ""')
+      local value=$(echo "$input" | jq -r '.value // false')
+
+      if [ "$enable_override" = "true" ] && [ "$value" = "true" ]; then
+        override_files+=("docker-compose.${env_name}.yaml")
+      fi
+
+      # Check dependent fields if this is a conditional input
+      if [ "$(echo "$input" | jq -r '.type')" = "conditional-text" ] && [ "$value" = "true" ]; then
+        echo "$input" | jq -r '.dependentField[]? | select(.enable_override == true and .value == true) | .envName' | while read -r dep_env_name; do
+          if [ -n "$dep_env_name" ]; then
+            override_files+=("docker-compose.${dep_env_name}.yaml")
+          fi
+        done
+      fi
+    done < <(echo "$json_input" | jq -c '.inputs[]')
   fi
 
   # Write system environment variables first
@@ -97,9 +105,13 @@ format_env_vars() {
     echo "HOST_PATH=$HOST_VOLUME_MAPPING"
   fi
 
-  # Write COMPOSE_FILE if override is needed
-  if [ "$needs_override" = true ]; then
-    echo "COMPOSE_FILE=docker-compose.yaml:docker-compose.override.yaml"
+  # Write COMPOSE_FILE with all override files if any exist
+  if [ ${#override_files[@]} -gt 0 ]; then
+    compose_file="docker-compose.yaml"
+    for override in "${override_files[@]}"; do
+      compose_file="${compose_file}:${override}"
+    done
+    echo "COMPOSE_FILE=${compose_file}"
   fi
 
   # Process inputs and write environment variables
@@ -150,10 +162,10 @@ format_env_vars() {
       value=$(echo "$line" | jq -r '.value')
       isPassword=$(echo "$line" | jq -r '.isPassword')
       quoteValue=$(echo "$line" | jq -r '.quoteValue')
-      
+
       if [[ -n "$key" ]]; then
         cleaned_key=$(clean_key "$key")
-        
+
         if [[ "$isPassword" == "true" ]]; then
           value="${value#\"}"
           value="${value%\"}"
@@ -175,7 +187,7 @@ format_env_vars() {
       fi
     fi
   done
-  
+
   mask_json_passwords
 }
 
