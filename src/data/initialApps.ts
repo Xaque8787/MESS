@@ -243,6 +243,7 @@ export const initialApps: DockerApp[] = [
         title: 'Port',
         envName: 'RADARR_PORT',
         type: 'text',
+        enable_override: true,
         required: true,
         placeholder: 'Enter desired port'
       },
@@ -264,6 +265,7 @@ export const initialApps: DockerApp[] = [
             envName: 'API_KEY',
             type: 'text',
             placeholder: 'Enter API key',
+            isPassword: true,
             required: true
           },
           {

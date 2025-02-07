@@ -73,31 +73,28 @@ mask_json_passwords() {
 
 format_env_vars() {
   local json_input=$(cat)
-  local needs_override=false
   local override_files=()
 
-  # Check for enable_override in inputs
+  # Process all inputs for override files
   if echo "$json_input" | jq -e '.inputs' > /dev/null 2>&1; then
-    # Check regular inputs
     while IFS= read -r input; do
+      # Check top-level input override
       local enable_override=$(echo "$input" | jq -r '.enable_override // false')
       local input_type=$(echo "$input" | jq -r '.type')
       local value=$(echo "$input" | jq -r '.value')
       local env_name=$(echo "$input" | jq -r '.envName')
 
-      if [ "$enable_override" = "true" ]; then
+      if [ "$enable_override" = "true" ] && [ -n "$value" ] && [ "$value" != "null" ]; then
         if [ "$input_type" = "checkbox" ]; then
           if [ "$value" = "true" ]; then
             override_files+=("docker-compose.${env_name}.yaml")
           fi
         else
-          if [ -n "$value" ] && [ "$value" != "null" ]; then
-            override_files+=("docker-compose.${env_name}.yaml")
-          fi
+          override_files+=("docker-compose.${env_name}.yaml")
         fi
       fi
 
-      # Check dependent fields if this is a conditional input
+      # Check dependent fields if this is a conditional input and it's enabled
       if [ "$input_type" = "conditional-text" ] && [ "$value" = "true" ]; then
         echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while IFS= read -r dep_field; do
           if [ -n "$dep_field" ]; then
@@ -106,15 +103,13 @@ format_env_vars() {
             local dep_env_name=$(echo "$dep_field" | jq -r '.envName')
             local dep_type=$(echo "$dep_field" | jq -r '.type // "text"')
 
-            if [ "$dep_enable_override" = "true" ]; then
+            if [ "$dep_enable_override" = "true" ] && [ -n "$dep_value" ] && [ "$dep_value" != "null" ]; then
               if [ "$dep_type" = "checkbox" ]; then
                 if [ "$dep_value" = "true" ]; then
                   override_files+=("docker-compose.${dep_env_name}.yaml")
                 fi
               else
-                if [ -n "$dep_value" ] && [ "$dep_value" != "null" ]; then
-                  override_files+=("docker-compose.${dep_env_name}.yaml")
-                fi
+                override_files+=("docker-compose.${dep_env_name}.yaml")
               fi
             fi
           fi
