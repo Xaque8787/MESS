@@ -10,10 +10,6 @@ clean_key() {
 encrypt_password() {
   local value="$1"
   local key="$MASTER_KEY"
-  # Remove null bytes before processing
-  value=$(echo -n "$value" | tr -d '\0')
-  key=$(echo -n "$key" | tr -d '\0')
-
   local value_bytes=($(echo -n "$value" | hexdump -v -e '/1 "%u "'))
   local key_bytes=($(echo -n "$key" | hexdump -v -e '/1 "%u "'))
   local result=""
@@ -78,32 +74,20 @@ mask_json_passwords() {
 format_env_vars() {
   local json_input=$(cat)
   local needs_override=false
-  local override_files=()
 
   # Check for enable_override in both top-level inputs and dependent fields
-  if echo "$json_input" | jq -e '.inputs' > /dev/null 2>&1; then
-    # First check top-level inputs
-    echo "$json_input" | jq -c '.inputs[]' | while IFS= read -r input; do
-      local enable_override=$(echo "$input" | jq -r '.enable_override // false')
-      local input_type=$(echo "$input" | jq -r '.type')
-      local value=$(echo "$input" | jq -r '.value')
-
-      if [ "$enable_override" = "true" ]; then
-        needs_override=true
-      fi
-
-      # Check dependent fields if this is a conditional input and it's enabled
-      if [ "$input_type" = "conditional-text" ] && [ "$value" = "true" ]; then
-        echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while IFS= read -r dep_field; do
-          if [ -n "$dep_field" ]; then
-            local dep_enable_override=$(echo "$dep_field" | jq -r '.enable_override // false')
-            if [ "$dep_enable_override" = "true" ]; then
-              needs_override=true
-            fi
-          fi
-        done
-      fi
-    done
+  if echo "$json_input" | jq -e '
+    .inputs | any(
+      .enable_override == true or
+      (
+        .type == "conditional-text" and
+        .value == true and
+        .dependentField != null and
+        (.dependentField | any(.enable_override == true))
+      )
+    )
+  ' > /dev/null 2>&1; then
+    needs_override=true
   fi
 
   # Write system environment variables first
@@ -115,7 +99,7 @@ format_env_vars() {
   fi
 
   # Write COMPOSE_FILE if override is needed
-  if [ "$needs_override" = "true" ]; then
+  if [ "$needs_override" = true ]; then
     echo "COMPOSE_FILE=docker-compose.yaml:docker-compose.override.yaml"
   fi
 
