@@ -73,57 +73,54 @@ mask_json_passwords() {
 
 format_env_vars() {
   local json_input=$(cat)
+  local needs_override=false
   local override_files=()
 
-  # Process all inputs to collect override files
+  # Check for enable_override in inputs
   if echo "$json_input" | jq -e '.inputs' > /dev/null 2>&1; then
-    # First, process top-level inputs
-    echo "$json_input" | jq -c '.inputs[]' | while IFS= read -r input; do
-      local input_type=$(echo "$input" | jq -r '.type')
+    # Check regular inputs
+    while IFS= read -r input; do
       local enable_override=$(echo "$input" | jq -r '.enable_override // false')
-      local env_name=$(echo "$input" | jq -r '.envName // ""')
-      local value=$(echo "$input" | jq -r '.value // false')
+      local input_type=$(echo "$input" | jq -r '.type')
+      local value=$(echo "$input" | jq -r '.value')
+      local env_name=$(echo "$input" | jq -r '.envName')
 
-      # Handle conditional inputs
-      if [ "$input_type" = "conditional-text" ]; then
-        # Check if the conditional input itself has enable_override
-        if [ "$enable_override" = "true" ] && [ "$value" = "true" ]; then
-          override_files+=("docker-compose.${env_name}.yaml")
+      if [ "$enable_override" = "true" ]; then
+        if [ "$input_type" = "checkbox" ]; then
+          if [ "$value" = "true" ]; then
+            override_files+=("docker-compose.${env_name}.yaml")
+          fi
+        else
+          if [ -n "$value" ] && [ "$value" != "null" ]; then
+            override_files+=("docker-compose.${env_name}.yaml")
+          fi
         fi
+      fi
 
-        # If conditional input is enabled, check its dependent fields
-        if [ "$value" = "true" ]; then
-          echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while IFS= read -r dep_field; do
-            if [ -n "$dep_field" ]; then
-              local dep_enable_override=$(echo "$dep_field" | jq -r '.enable_override // false')
-              local dep_env_name=$(echo "$dep_field" | jq -r '.envName // ""')
-              local dep_value=$(echo "$dep_field" | jq -r '.value')
+      # Check dependent fields if this is a conditional input
+      if [ "$input_type" = "conditional-text" ] && [ "$value" = "true" ]; then
+        echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while IFS= read -r dep_field; do
+          if [ -n "$dep_field" ]; then
+            local dep_enable_override=$(echo "$dep_field" | jq -r '.enable_override // false')
+            local dep_value=$(echo "$dep_field" | jq -r '.value')
+            local dep_env_name=$(echo "$dep_field" | jq -r '.envName')
+            local dep_type=$(echo "$dep_field" | jq -r '.type // "text"')
 
-              # Check if dependent field has enable_override and a value
-              if [ "$dep_enable_override" = "true" ]; then
-                # For checkbox type, check if true
-                local dep_type=$(echo "$dep_field" | jq -r '.type // "text"')
-                if [ "$dep_type" = "checkbox" ]; then
-                  if [ "$dep_value" = "true" ]; then
-                    override_files+=("docker-compose.${dep_env_name}.yaml")
-                  fi
-                # For text type, check if not empty
-                else
-                  if [ -n "$dep_value" ] && [ "$dep_value" != "null" ]; then
-                    override_files+=("docker-compose.${dep_env_name}.yaml")
-                  fi
+            if [ "$dep_enable_override" = "true" ]; then
+              if [ "$dep_type" = "checkbox" ]; then
+                if [ "$dep_value" = "true" ]; then
+                  override_files+=("docker-compose.${dep_env_name}.yaml")
+                fi
+              else
+                if [ -n "$dep_value" ] && [ "$dep_value" != "null" ]; then
+                  override_files+=("docker-compose.${dep_env_name}.yaml")
                 fi
               fi
             fi
-          done
-        fi
-      # Handle regular inputs
-      else
-        if [ "$enable_override" = "true" ] && [ "$value" = "true" ]; then
-          override_files+=("docker-compose.${env_name}.yaml")
-        fi
+          fi
+        done
       fi
-    done
+    done < <(echo "$json_input" | jq -c '.inputs[]')
   fi
 
   # Write system environment variables first
@@ -134,10 +131,9 @@ format_env_vars() {
     echo "HOST_PATH=$HOST_VOLUME_MAPPING"
   fi
 
-  # Write COMPOSE_FILE with all override files if any exist
+  # Write COMPOSE_FILE if we have any override files
   if [ ${#override_files[@]} -gt 0 ]; then
     compose_file="docker-compose.yaml"
-    # Remove duplicates and sort override files
     readarray -t sorted_unique_overrides < <(printf '%s\n' "${override_files[@]}" | sort -u)
     for override in "${sorted_unique_overrides[@]}"; do
       compose_file="${compose_file}:${override}"
