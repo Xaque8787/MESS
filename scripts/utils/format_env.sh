@@ -93,14 +93,26 @@ format_env_vars() {
 
         # If conditional input is enabled, check its dependent fields
         if [ "$value" = "true" ]; then
-          echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while read -r dep_field; do
+          echo "$input" | jq -c '.dependentField[]?' 2>/dev/null | while IFS= read -r dep_field; do
             if [ -n "$dep_field" ]; then
               local dep_enable_override=$(echo "$dep_field" | jq -r '.enable_override // false')
               local dep_env_name=$(echo "$dep_field" | jq -r '.envName // ""')
-              local dep_value=$(echo "$dep_field" | jq -r '.value // false')
+              local dep_value=$(echo "$dep_field" | jq -r '.value')
 
-              if [ "$dep_enable_override" = "true" ] && [ "$dep_value" = "true" ]; then
-                override_files+=("docker-compose.${dep_env_name}.yaml")
+              # Check if dependent field has enable_override and a value
+              if [ "$dep_enable_override" = "true" ]; then
+                # For checkbox type, check if true
+                local dep_type=$(echo "$dep_field" | jq -r '.type // "text"')
+                if [ "$dep_type" = "checkbox" ]; then
+                  if [ "$dep_value" = "true" ]; then
+                    override_files+=("docker-compose.${dep_env_name}.yaml")
+                  fi
+                # For text type, check if not empty
+                else
+                  if [ -n "$dep_value" ] && [ "$dep_value" != "null" ]; then
+                    override_files+=("docker-compose.${dep_env_name}.yaml")
+                  fi
+                fi
               fi
             fi
           done

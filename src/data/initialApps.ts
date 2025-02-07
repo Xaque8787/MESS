@@ -264,8 +264,7 @@ export const initialApps: DockerApp[] = [
             envName: 'API_KEY',
             type: 'text',
             placeholder: 'Enter API key',
-            required: true,
-            isPassword: true
+            required: true
           },
           {
             title: 'Enable Debug',
