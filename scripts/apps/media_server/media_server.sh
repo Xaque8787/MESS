@@ -20,13 +20,13 @@ mv -v /app/compose/not_installed/media_server /app/compose/installed/
 sleep 3
 
 COMPOSE_FILE_PATH="/app/compose/installed/media_server/"
-OVERRIDE_FILE_PATH="/app/compose/installed/media_server/docker-compose.override.yaml"
+OVERRIDE_FILE_PATH="/app/compose/installed/media_server/docker-compose.ADD_MEDIA_PATH.yaml"
 
 HOST_PATH_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Add Media Path") | .value // false')
 
 if [ "$HOST_PATH_ENABLED" = "true" ]; then
   echo "Host path enabled. Using override file..."
-  mv -vf /app/compose/overrides/media_server/docker-compose.override.yaml "$OVERRIDE_FILE_PATH"
+  mv -vf /app/compose/overrides/media_server/docker-compose.ADD_MEDIA_PATH.yaml "$OVERRIDE_FILE_PATH"
   env -C "$COMPOSE_FILE_PATH" docker compose up -d
 else
   echo "No override file. Starting container normally..."
