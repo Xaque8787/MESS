@@ -167,7 +167,7 @@ export const initialApps: DockerApp[] = [
         title: 'EPG URLS',
         envName: 'EPG_URL',
         type: 'text',
-        description: 'Can be multiple urls seperated by comma',
+        description: 'Can be multiple urls separated by comma',
         required: true,
         quoteValue: true,
         placeholder: 'Enter EPG URLS'
@@ -189,7 +189,7 @@ export const initialApps: DockerApp[] = [
         visible: false
       },
       {
-        title: 'Use parsed livetv.m3u from parser',
+        title: 'Use parsed livetv.m3u file from M3Uparser',
         envName: 'USE_PARSED_LIVETV',
         type: 'checkbox',
         required: false,
@@ -216,8 +216,7 @@ export const initialApps: DockerApp[] = [
         title: 'Port',
         envName: 'SONARR_PORT',
         type: 'text',
-        required: true,
-        isPassword: true,
+        required: false,
         placeholder: 'Enter desired port'
       },
       {
@@ -243,14 +242,12 @@ export const initialApps: DockerApp[] = [
         title: 'Port',
         envName: 'RADARR_PORT',
         type: 'text',
-        enable_override: true,
-        required: true,
+        required: false,
         placeholder: 'Enter desired port'
       },
       {
         title: 'Enable Basic Auth',
         envName: 'RADARR_BASIC_AUTH',
-        enable_override: true,
         type: 'checkbox',
         required: false
       },

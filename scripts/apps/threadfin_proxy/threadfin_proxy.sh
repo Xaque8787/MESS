@@ -30,7 +30,7 @@ source /app/virt_env/bin/activate
 
 sleep 15
 # Execute the Python script as a module
-python3 -m server_setup.setup_threadfin
+python3 -m server_setup.threadfin.setup_threadfin
 
 deactivate
 

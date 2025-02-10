@@ -37,7 +37,7 @@ sleep 60
 source /app/virt_env/bin/activate
 
 # Execute the Python script as a module
-python3 -m server_setup.setup_server
+python3 -m server_setup.jellyfin_api.setup_server
 
 deactivate
 echo "Step 3: Starting services..."
