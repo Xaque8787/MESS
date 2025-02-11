@@ -79,12 +79,30 @@ format_env_vars() {
   readarray -t override_files < <(echo "$json_input" | jq -r '
     .inputs | map(
       if .enable_override == true then
-        .envName
+        # For checkbox type, check if value is true
+        if .type == "checkbox" and .value == true then
+          .envName
+        # For text type, check if value is non-empty
+        elif .type == "text" and .value != "" and .value != null then
+          .envName
+        # For conditional-text, check if value is true
+        elif .type == "conditional-text" and .value == true then
+          .envName
+        else
+          empty
+        end
       else
         empty
       end,
       if .type == "conditional-text" and .value == true and .dependentField then
-        .dependentField[] | select(.enable_override == true) | .envName
+        .dependentField[] | select(.enable_override == true) |
+        if .type == "checkbox" and .value == true then
+          .envName
+        elif .type == "text" and .value != "" and .value != null then
+          .envName
+        else
+          empty
+        end
       else
         empty
       end
