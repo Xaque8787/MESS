@@ -14,8 +14,6 @@ echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down
 
 echo "Step 2: Removing container..."
-docker rm sonarr
-
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/sonarr_app/.env
 rm /app/compose/installed/sonarr_app/config

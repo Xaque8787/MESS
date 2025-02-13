@@ -14,7 +14,6 @@ echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down
 
 echo "Step 2: Removing container..."
-docker rm jellyfin
 
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/media_server/.env
