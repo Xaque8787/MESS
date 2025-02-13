@@ -14,7 +14,7 @@ echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down
 
 echo "Step 2: Removing container..."
-docker rm <container_name>
+docker rm dockge
 
 echo "Step 3: Removing environment file..."
 rm /app/compose/dockge/.env
