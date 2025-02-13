@@ -12,7 +12,6 @@ services:
     networks:
       messnet:
         ipv4_address: 10.21.12.11
-      default: null
     ports:
       - ${RADARR_PORT:-7878}:7878
     restart: unless-stopped

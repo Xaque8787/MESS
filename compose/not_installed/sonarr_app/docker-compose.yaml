@@ -12,7 +12,6 @@ services:
     networks:
       messnet:
         ipv4_address: 10.21.12.12
-      default: null
     ports:
       - ${SONARR_PORT:-8989}:8989
     restart: unless-stopped

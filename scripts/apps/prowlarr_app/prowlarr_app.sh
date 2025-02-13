@@ -36,9 +36,11 @@ echo "API key extracted and saved to .env"
 git clone https://github.com/dreulavelle/Prowlarr-Indexers.git
 sleep 9
 mv -v ./Prowlarr-Indexers/Custom /app/compose/installed/prowlarr_app/config/Definitions/
-source /app/virt_env/bin/activate
-python3 -m server_setup.arrs.prowlarr.prowlarr_setup
-deactivate
-
+ZILEAN_ENABLED=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Enable Zilean Indexer") | .value // false')
+if [ "$ZILEAN_ENABLED" = "true" ]; then
+  source /app/virt_env/bin/activate
+  python3 -m server_setup.arrs.prowlarr.prowlarr_setup
+  deactivate
+fi
 
 echo -e "\n✅ Prowlarr installation completed!"

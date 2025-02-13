@@ -18,7 +18,7 @@ docker rm jellyfin
 
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/media_server/.env
-
+rm -rf /app/compose/installed/media_server/config
 echo "Step 4: Moving configuration..."
 mv /app/compose/installed/media_server /app/compose/not_installed/
 
