@@ -215,7 +215,7 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Port',
-        envName: 'PROVIDED_PORT',
+        envName: 'SONARR_PORT',
         type: 'text',
         required: false,
         placeholder: 'Enter desired port, blank will set 8989'
@@ -242,7 +242,7 @@ export const initialApps: DockerApp[] = [
     inputs: [
       {
         title: 'Port',
-        envName: 'PROVIDED_PORT',
+        envName: 'RADARR_PORT',
         type: 'text',
         required: false,
         placeholder: 'Enter desired port, blank will set 7878'
