@@ -1,2 +1,13 @@
-version: '3.8'
 services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    ports:
+      - 5001:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${HOST_PATH}/dockge/data:/app/data
+      - ${HOST_PATH}/installed:${HOST_PATH}/installed
+    environment:
+      # Tell Dockge where to find the stacks
+      - DOCKGE_STACKS_DIR=${HOST_PATH}/installed

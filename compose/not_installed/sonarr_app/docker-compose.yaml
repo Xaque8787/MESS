@@ -1,2 +1,22 @@
-version: '3.8'
 services:
+  radarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${HOST_PATH}/installed/sonarr_app/config:/config
+      - /mnt:/mnt:rslave
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.12
+      default: null
+    ports:
+      - ${SONARR_PORT:-8989}:8989
+    restart: unless-stopped
+networks:
+  messnet:
+    external: true
+    name: messnet

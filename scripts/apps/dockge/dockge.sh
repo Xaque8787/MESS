@@ -16,11 +16,14 @@ sleep 1
 
 # Move compose directory from not_installed to installed
 echo "Moving compose directory to installed..."
-mv /app/compose/not_installed/dockge /app/compose/installed/
+mv /app/compose/not_installed/dockge /app/compose/
 
 echo "Step 2: Configuring Dockge..."
 sleep 1
-
+COMPOSE_FILE_PATH="/app/compose/dockge/"
+echo "Step 3: Starting services..."
+sleep 1
+env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 echo "Step 3: Starting services..."
 sleep 1
 

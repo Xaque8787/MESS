@@ -3,8 +3,8 @@ services:
     container_name: m3uparser
     image: xaque87/m3uparser_mess:latest
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
     env_file:
       - .env
     volumes:

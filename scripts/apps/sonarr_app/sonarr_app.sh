@@ -20,8 +20,17 @@ mv /app/compose/not_installed/sonarr_app /app/compose/installed/
 
 echo "Step 2: Configuring Sonarr..."
 sleep 1
-
+COMPOSE_FILE_PATH="/app/compose/installed/sonarr_app/"
 echo "Step 3: Starting services..."
 sleep 1
-
+env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
+echo "Step 3: Starting services..."
+sleep 10
+while [ ! -f "/app/compose/installed/sonarr_app/config/config.xml" ]; do
+    echo "Waiting for config.xml to be created..."
+    sleep 5  # Check every 5 seconds
+done
+# Run the sed command once config.xml is detected
+sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:SONARR_APIKEY=\1:p' /app/compose/installed/sonarr_app/config/config.xml >> /app/compose/installed/sonarr_app/.env
+echo "API key extracted and saved to .env"
 echo -e "\n✅ Sonarr installation completed!"

@@ -1,2 +1,22 @@
-version: '3.8'
 services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=America/Los_Angeles
+    volumes:
+      - ${HOST_PATH}/installed/radarr_app/config:/config
+      - /mnt:/mnt:rslave
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.11
+      default: null
+    ports:
+      - {RADARR_PORT:-7878}:7878
+    restart: unless-stopped
+networks:
+  messnet:
+    external: true
+    name: messnet

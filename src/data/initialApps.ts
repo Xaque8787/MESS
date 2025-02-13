@@ -211,13 +211,14 @@ export const initialApps: DockerApp[] = [
     initialized: false,
     visible: true,
     iconUrl: '/images/sonarr.png',
+    prereqs: ['prowlarr_app'],
     inputs: [
       {
         title: 'Port',
-        envName: 'SONARR_PORT',
+        envName: 'PROVIDED_PORT',
         type: 'text',
         required: false,
-        placeholder: 'Enter desired port'
+        placeholder: 'Enter desired port, blank will set 8989'
       },
       {
         title: 'Enable Basic Auth',
@@ -237,13 +238,14 @@ export const initialApps: DockerApp[] = [
     initialized: false,
     visible: true,
     iconUrl: '/images/radarr.png',
+    prereqs: ['prowlarr_app'],
     inputs: [
       {
         title: 'Port',
-        envName: 'RADARR_PORT',
+        envName: 'PROVIDED_PORT',
         type: 'text',
         required: false,
-        placeholder: 'Enter desired port'
+        placeholder: 'Enter desired port, blank will set 7878'
       },
       {
         title: 'Enable Basic Auth',
@@ -252,46 +254,16 @@ export const initialApps: DockerApp[] = [
         required: false
       },
       {
-        title: 'Enable Feature',
-        envName: 'ENABLE_FEATURE',
+        title: 'Enable 4K instance',
+        envName: 'RADRR_4k',
         type: 'conditional-text',
         required: false,
         dependentField: [
           {
-            title: 'API Key',
-            envName: 'API_KEY',
+            title: 'Radarr 4k Port',
+            envName: 'RADARR_4k_PROVIDED_PORT',
             type: 'text',
-            placeholder: 'Enter API key',
-            isPassword: true,
-            required: true
-          },
-          {
-            title: 'Enable Debug',
-            envName: 'DEBUG_MODE',
-            type: 'checkbox',
-            required: false
-          },
-          {
-            title: 'Server URL',
-            envName: 'SERVER_URL',
-            type: 'text',
-            placeholder: 'Enter server URL',
-            required: true,
-            enable_override: true
-          },
-          {
-            title: 'Testin',
-            envName: 'Test_URL',
-            type: 'text',
-            description: 'Yo this is description',
-            placeholder: 'Enter server URL',
-            required: false,
-            prereqs: [{
-              appId: 'm3uparser',
-              inputTitle: 'Enable LiveTV',
-              value: true
-            }],
-            quoteValue: true
+            placeholder: 'Enter desired port, blank will set 8787'
           }
         ]
       }
