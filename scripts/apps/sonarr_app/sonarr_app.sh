@@ -33,6 +33,7 @@ done
 # Run the sed command once config.xml is detected
 sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:SONARR_APIKEY=\1:p' /app/compose/installed/sonarr_app/config/config.xml >> /app/compose/installed/sonarr_app/.env
 echo "API key extracted and saved to .env"
+sleep 20
 source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.connect_sonarr
 deactivate

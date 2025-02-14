@@ -33,6 +33,7 @@ done
 # Run the sed command once config.xml is detected
 sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:RADARR_APIKEY=\1:p' /app/compose/installed/radarr_app/config/config.xml >> /app/compose/installed/radarr_app/.env
 echo "API key extracted and saved to .env"
+sleep 20
 source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.connect_radarr
 deactivate

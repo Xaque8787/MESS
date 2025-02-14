@@ -308,7 +308,6 @@ export const initialApps: DockerApp[] = [
         title: 'Port',
         envName: 'PROWLARR_PORT',
         type: 'text',
-        required: true,
         placeholder: 'Enter desired port'
       },
       {
