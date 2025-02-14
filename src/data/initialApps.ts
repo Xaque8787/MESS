@@ -204,7 +204,7 @@ export const initialApps: DockerApp[] = [
   {
     id: 'sonarr_app',
     name: 'Sonarr',
-    installOrder: 2,
+    installOrder: 2.3,
     description: 'TV Series management application',
     category: 'STARR APPS',
     selected: false,
@@ -239,7 +239,7 @@ export const initialApps: DockerApp[] = [
   {
     id: 'radarr_app',
     name: 'Radarr',
-    installOrder: 2.1,
+    installOrder: 2.2,
     description: 'Movie management application',
     category: 'STARR APPS',
     selected: false,
@@ -288,7 +288,7 @@ export const initialApps: DockerApp[] = [
   {
     id: 'prowlarr_app',
     name: 'Prowlarr',
-    installOrder: 2.2,
+    installOrder: 2.1,
     description: 'Index management application',
     category: 'STARR APPS',
     selected: false,
