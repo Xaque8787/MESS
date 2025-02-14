@@ -38,6 +38,7 @@ RUN chmod +x /app/scripts/entrypoint.js && \
     chmod +x /app/scripts/utils/format_env.sh && \
     chmod +x /app/scripts/utils/resolve_host.sh && \
     chmod +x /app/scripts/utils/shared_env.sh && \
+    chmod +x /app/scripts/utils/decrypt_env.sh && \
     find /app/scripts/apps -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
 # Build the application
@@ -87,6 +88,7 @@ RUN python3 -m venv /app/virt_env && \
 RUN chmod +x /app/scripts/utils/format_env.sh && \
     chmod +x /app/scripts/utils/resolve_host.sh && \
     chmod +x /app/scripts/utils/shared_env.sh && \
+    chmod +x /app/scripts/utils/decrypt_env.sh && \
     find /app/scripts/apps -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
 # Copy and set up entrypoint script

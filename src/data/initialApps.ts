@@ -214,6 +214,14 @@ export const initialApps: DockerApp[] = [
     prereqs: ['prowlarr_app'],
     inputs: [
       {
+        title: 'Sonarr IP',
+        envName: 'SONARR_IP',
+        type: 'text',
+        required: false,
+        value: '10.21.12.12',
+        visible: false
+      },
+      {
         title: 'Port',
         envName: 'SONARR_PORT',
         type: 'text',
@@ -240,6 +248,14 @@ export const initialApps: DockerApp[] = [
     iconUrl: '/images/radarr.png',
     prereqs: ['prowlarr_app'],
     inputs: [
+      {
+        title: 'Radarr IP',
+        envName: 'RADARR_IP',
+        type: 'text',
+        required: false,
+        value: '10.21.12.11',
+        visible: false
+      },
       {
         title: 'Port',
         envName: 'RADARR_PORT',
