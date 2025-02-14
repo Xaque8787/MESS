@@ -334,7 +334,7 @@ export const initialApps: DockerApp[] = [
   {
     id: 'recyclarr_app',
     name: 'Reyclarr',
-    installOrder: 2.3,
+    installOrder: 2.4,
     description: 'Movie management application',
     category: 'STARR APPS',
     selected: false,
