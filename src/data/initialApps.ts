@@ -386,7 +386,7 @@ export const initialApps: DockerApp[] = [
   {
     id: 'blackhole_app',
     name: 'Blackhole',
-    installOrder: 5,
+    installOrder: 2,
     description: 'Blackhole downloader for sonarr/radarr',
     category: 'DOWNLOAD CLIENTS',
     selected: false,

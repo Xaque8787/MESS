@@ -8,7 +8,7 @@ services:
       - TZ=America/Los_Angeles
     volumes:
       - ${HOST_PATH}/installed/sonarr_app/config:/config
-      - /mnt:/mnt:rslave
+      - mounts:/mnt:rslave
     networks:
       messnet:
         ipv4_address: 10.21.12.12
@@ -19,3 +19,8 @@ networks:
   messnet:
     external: true
     name: messnet
+
+volumes:
+  mounts:
+    external: true
+    name: mounts

@@ -1,2 +1,51 @@
-version: '3.8'
 services:
+  blackhole:
+    image: cy01/blackhole:latest # or cy01/blackhole:beta
+    container_name: blackhole
+    ports:
+      - "8282:8282" # qBittorrent
+      - "8181:8181" # Proxy
+    user: ${PUID:-1000}:${PGID:-1000}
+    volumes:
+      - mounts:/mnt:rslave
+      - ${HOST_PATH}/installed/blackhole_app/config:/app # config.json must be in this directory
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - UMASK=002
+      - QBIT_PORT=8282 # qBittorrent Port. This is optional. You can set this in the config file
+      - PORT=8181 # Proxy Port. This is optional. You can set this in the config file
+    restart: unless-stopped
+    depends_on:
+      - rclone
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.21
+  rclone:
+    image: rclone/rclone:latest
+    container_name: rclone
+    restart: unless-stopped
+    privileged: true
+    environment:
+      TZ: America/Los_Angeles
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+    volumes:
+      - mounts:/mnt:rshared
+      - ${HOST_PATH}/installed/blackhole_app/rclone.conf:/config/rclone/rclone.conf:ro
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
+    command: "mount wdav-remote: /mnt/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mnt/cache --transfers=1"
+networks:
+  messnet:
+    external: true
+    name: messnet
+
+volumes:
+  mounts:
+    external: true
+    name: mounts

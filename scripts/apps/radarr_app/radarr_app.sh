@@ -36,5 +36,9 @@ echo "API key extracted and saved to .env"
 sleep 25
 source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.connect_radarr
+sleep 10
+python3 -m server_setup.arrs.radarr.radarr_setup
+sleep 10
+python3 -m server_setup.arrs.radarr.add_blackhole_radarr
 deactivate
 echo -e "\n✅ Radarr installation completed!"

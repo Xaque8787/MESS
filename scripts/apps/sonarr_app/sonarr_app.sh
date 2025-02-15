@@ -36,5 +36,7 @@ echo "API key extracted and saved to .env"
 sleep 25
 source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.connect_sonarr
+sleep 10
+python3 -m server_setup.arrs.sonarr.sonarr_setup
 deactivate
 echo -e "\n✅ Sonarr installation completed!"
