@@ -7,7 +7,7 @@ services:
       - "8181:8181" # Proxy
     user: ${PUID:-1000}:${PGID:-1000}
     volumes:
-      - mounts:/mnt:rslave
+      - ${APP_ROOT}/media:/mess_media:rslave
       - ${HOST_PATH}/installed/blackhole_app/config:/app # config.json must be in this directory
     environment:
       - PUID=${PUID:-1000}
@@ -31,7 +31,7 @@ services:
       PUID: ${PUID:-1000}
       PGID: ${PGID:-1000}
     volumes:
-      - mounts:/mnt:rshared
+      - ${APP_ROOT}/media:/mess_media:rshared
       - ${HOST_PATH}/installed/blackhole_app/rclone.conf:/config/rclone/rclone.conf:ro
     cap_add:
       - SYS_ADMIN
@@ -39,7 +39,7 @@ services:
       - apparmor:unconfined
     devices:
       - /dev/fuse:/dev/fuse:rwm
-    command: "mount wdav-remote: /mnt/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mnt/cache --transfers=1"
+    command: "mount wdav-remote: /mess_media/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mnt/cache --transfers=1"
 networks:
   messnet:
     external: true

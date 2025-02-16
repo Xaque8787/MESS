@@ -112,9 +112,12 @@ format_env_vars() {
   # Write system environment variables first
   get_system_env_vars
 
-  # Write HOST_PATH if available
+  # Write HOST_PATH and APP_ROOT if available
   if [ -n "$HOST_VOLUME_MAPPING" ]; then
     echo "HOST_PATH=$HOST_VOLUME_MAPPING"
+  fi
+  if [ -n "$APP_ROOT" ]; then
+    echo "APP_ROOT=$APP_ROOT"
   fi
 
   # Write COMPOSE_FILE if we have override files

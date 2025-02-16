@@ -10,8 +10,9 @@ services:
       - "3001:3001"
     volumes:
       - ./data:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./compose/:/app/compose/
+      - ./media/:/app/media/
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - NODE_ENV=production
       - MASTER_KEY=abcdefghijklmnopqrstuvwx

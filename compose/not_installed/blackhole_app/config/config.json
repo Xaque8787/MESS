@@ -4,7 +4,7 @@
       "name": "realdebrid",
       "host": "https://api.real-debrid.com/rest/1.0",
       "api_key": "apikey",
-      "folder": "/mnt/remote/realdebrid/torrents/",
+      "folder": "/mess_media/remote/realdebrid/torrents/",
       "rate_limit": "250/minute",
       "download_uncached": false,
       "check_cached": false
@@ -21,7 +21,7 @@
   "max_cache_size": 1000,
   "qbittorrent": {
     "port": "8282",
-    "download_folder": "/mnt/jellyfin/symlinks",
+    "download_folder": "/mess_media/jellyfin/symlinks",
     "categories": ["tv-sonarr", "movie-radarr"],
     "refresh_interval": 5,
     "log_level": "info"

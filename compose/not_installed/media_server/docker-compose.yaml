@@ -9,7 +9,8 @@ services:
       - JELLYFIN_PublishedServerUrl=0.0.0.0 #optional
     volumes:
       - ${HOST_PATH}/installed/media_server/config:/config
-      - mounts:/mnt:rslave
+      - mounts:/mnt
+      - ${APP_ROOT}/media:/mess_media:rslave
     ports:
       - 8096:8096
       - 8920:8920 #optional

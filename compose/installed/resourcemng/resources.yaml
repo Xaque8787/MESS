@@ -4,10 +4,10 @@ services:
     container_name: resourcemng
     privileged: true  # Ensures it can modify mount flags
     volumes:
-      - mounts:/mnt:rshared
+      - mounts:/mnt
     restart: "no"
     entrypoint: >
-      sh -c "mkdir -p /mnt/jellyfin /mnt/jellyfin/symlinks/movie-radarr /mnt/jellyfin/symlinks/tv-sonarr /mnt/jellyfin/movies /mnt/jellyfin/tv /mnt/remote /mnt/remote/torbox/torrents /mnt/remote/realdebrid/torrents /mnt/vods/Movie_VOD /mnt/vods/TV_VOD /mnt/host_library/movies /mnt/host_library/tv && chown -R ${PUID}:${PGID} /mnt && echo 'Directories initialized and ownership set to ${PUID}:${PGID}!'"
+      sh -c "mkdir -p /mnt/vods/Movie_VOD /mnt/vods/TV_VOD && chown -R ${PUID}:${PGID} /mnt && echo 'Directories initialized and ownership set to ${PUID}:${PGID}!'"
 
 volumes:
   mounts:
