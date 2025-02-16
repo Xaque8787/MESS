@@ -63,11 +63,9 @@ RUN apk add --no-cache \
     docker-compose \
     coreutils
 
-# Create data directory
-RUN mkdir -p /app/data
-
-# Create media directory structure
-RUN mkdir -p /app/media/jellyfin/symlinks && \
+# Create required directories
+RUN mkdir -p /app/data && \
+    mkdir -p /app/media/jellyfin/symlinks && \
     mkdir -p /app/media/jellyfin/movies && \
     mkdir -p /app/media/jellyfin/tv && \
     mkdir -p /app/media/remote/realdebrid/torrents && \
