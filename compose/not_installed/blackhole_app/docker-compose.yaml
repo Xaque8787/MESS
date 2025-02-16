@@ -1,6 +1,6 @@
 services:
   blackhole:
-    image: cy01/blackhole:latest # or cy01/blackhole:beta
+    image: cy01/blackhole:beta # or cy01/blackhole:beta
     container_name: blackhole
     ports:
       - "8282:8282" # qBittorrent
