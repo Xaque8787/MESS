@@ -66,6 +66,13 @@ RUN apk add --no-cache \
 # Create data directory
 RUN mkdir -p /app/data
 
+# Create media directory structure
+RUN mkdir -p /app/media/jellyfin/symlinks && \
+    mkdir -p /app/media/jellyfin/movies && \
+    mkdir -p /app/media/jellyfin/tv && \
+    mkdir -p /app/media/remote/realdebrid/torrents && \
+    mkdir -p /app/media/remote/torbox/torrents
+
 # Copy package files and install production dependencies
 COPY package*.json ./
 RUN npm install --production
