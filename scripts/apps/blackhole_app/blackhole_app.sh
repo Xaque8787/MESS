@@ -25,7 +25,7 @@ env -C "$COMPOSE_FILE_PATH" docker compose -f rclone_pass.yaml up -d --wait
 RCLONE_CONF_PATH="/app/compose/installed/blackhole_app/rclone.conf"
 sleep 10
 # Capture the obscured password
-OBSCURED_PASS=$(docker exec -it rclone_pass rclone obscure "$DEBRID_PASS" | tr -d '\r')
+OBSCURED_PASS=$(docker exec rclone_pass rclone obscure "$DEBRID_PASS" | tr -d '\r')
 
 # Append or create the config file
 cat <<EOF > "$RCLONE_CONF_PATH"
