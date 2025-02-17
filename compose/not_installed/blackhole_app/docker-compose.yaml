@@ -39,7 +39,7 @@ services:
       - apparmor:unconfined
     devices:
       - /dev/fuse:/dev/fuse:rwm
-    command: "mount wdav-remote: /mess_media/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mnt/cache --transfers=1"
+    command: "mount wdav-remote: /mess_media/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mess_media/remote/cache --transfers=1"
 networks:
   messnet:
     external: true

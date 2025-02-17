@@ -181,7 +181,7 @@ format_env_vars() {
       if [[ -n "$key" ]]; then
         cleaned_key=$(clean_key "$key")
 
-        if [[ "$isPassword" == "true" ]]; then
+        if [[ "$isPassword" == "true" ]] && [[ "$key" =~ (?i).*password.*|.*api.*key.* ]]; then
           value="${value#\"}"
           value="${value%\"}"
           encrypted_value=$(encrypt_password "$value")

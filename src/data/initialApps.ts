@@ -412,13 +412,30 @@ export const initialApps: DockerApp[] = [
         envName: 'ENABLE_REALDEBRID',
         type: 'conditional-text',
         required: false,
-        dependentField: [{
+        dependentField: [
+            {
           title: 'RealDebrid API Key',
           envName: 'REALDEBRID_API_KEY',
           type: 'text',
           placeholder: 'Enter RealDebrid API key',
           required: true
-        }]
+            },
+            {
+          title: 'RealDebrid Webdav Username',
+          envName: 'REALDEBRID_WEBDAV_USER',
+          type: 'text',
+          placeholder: 'Enter RealDebrid Webdav username',
+          required: true
+            },
+            {
+          title: 'RealDebrid Webdav Password',
+          envName: 'REALDEBRID_WEBDAV_PASS',
+          type: 'text',
+          isPassword: true,
+          placeholder: 'Enter RealDebrid Webdav password',
+          required: true
+            }
+        ]
       },
       {
         title: 'Allow un-cached',

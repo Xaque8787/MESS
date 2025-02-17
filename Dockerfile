@@ -66,8 +66,11 @@ RUN apk add --no-cache \
 # Create required directories
 RUN mkdir -p /app/data && \
     mkdir -p /app/media/jellyfin/symlinks && \
+    mkdir -p /app/media/jellyfin/symlinks/movie-radarr && \
+    mkdir -p /app/media/jellyfin/symlinks/tv-sonarr && \
     mkdir -p /app/media/jellyfin/movies && \
     mkdir -p /app/media/jellyfin/tv && \
+    mkdir -p /app/media/remote/cache && \
     mkdir -p /app/media/remote/realdebrid/torrents && \
     mkdir -p /app/media/remote/torbox/torrents
 

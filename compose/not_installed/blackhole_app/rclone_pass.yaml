@@ -1,0 +1,7 @@
+services:
+  rclone:
+    image: rclone/rclone:latest
+    container_name: rclone_pass
+    entrypoint: [ "tail", "-f", "/dev/null" ] # Keep the container running
+    environment:
+      - TZ=UTC
