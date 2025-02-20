@@ -48,7 +48,7 @@ EOF
 cat <<EOF >> "$RC_CONFIG_PATH"
 mounts:
   - backendName: "realdebrid"
-    mountPoint: "$APP_ROOT/media/remote/realdebrid"
+    mountPoint: "/mess_media/remote/realdebrid"
 
 serves: []
 EOF
