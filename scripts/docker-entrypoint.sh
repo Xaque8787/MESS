@@ -13,6 +13,7 @@ export PGID=${PGID:-1000}
 
 # Create required directories if they don't exist
 mkdir -p /app/data
+mkdir -p /app/data/caches
 mkdir -p /app/media/jellyfin/symlinks
 mkdir -p /app/media/jellyfin/symlinks/movie-radarr
 mkdir -p /app/media/jellyfin/symlinks/tv-sonarr

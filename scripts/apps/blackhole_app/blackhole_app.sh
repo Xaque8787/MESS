@@ -22,7 +22,14 @@ echo "API Key: $DEBRID_API"
 echo "PASS: $DEBRID_PASS"
 echo "User: $DEBRID_USER"
 env -C "$COMPOSE_FILE_PATH" docker compose -f rclone_pass.yaml up -d --wait
+if [ -f /app/compose/installed/blackhole_app/.env ]; then
+    source /app/compose/installed/blackhole_app/.env
+else
+    echo ".env file not found!"
+    exit 1
+fi
 RCLONE_CONF_PATH="/app/compose/installed/blackhole_app/rclone.conf"
+RC_CONFIG_PATH="/app/compose/installed/blackhole_app/config/config.yaml"
 sleep 10
 # Capture the obscured password
 OBSCURED_PASS=$(docker exec rclone_pass rclone obscure "$DEBRID_PASS" | tr -d '\r')
@@ -38,14 +45,22 @@ user = $DEBRID_USER
 pass = $OBSCURED_PASS
 EOF
 
+cat <<EOF >> "$RC_CONFIG_PATH"
+mounts:
+  - backendName: "realdebrid"
+    mountPoint: "$APP_ROOT/data/caches"
+
+serves: []
+EOF
+
 sed -i "s|\"api_key\": \"[^\"]*\"|\"api_key\": \"$DEBRID_API\"|" /app/compose/installed/blackhole_app/config/config.json
 
 env -C "$COMPOSE_FILE_PATH" docker compose -f rclone_pass.yaml down
 # Move compose directory from not_installed to installed
 
 
-echo "Step 2: Configuring Radarr..."
-sleep 1
+echo "Step 2: Configuring..."
+sleep 8
 
 echo "Step 3: Starting services..."
 sleep 1

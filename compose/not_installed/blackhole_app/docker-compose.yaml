@@ -17,29 +17,63 @@ services:
       - PORT=8181 # Proxy Port. This is optional. You can set this in the config file
     restart: unless-stopped
     depends_on:
-      - rclone
+      - rclone-manager
     networks:
       messnet:
         ipv4_address: 10.21.12.21
-  rclone:
-    image: rclone/rclone:latest
-    container_name: rclone
+  rclone-manager:
+    image: ipromknight/rclone-manager:latest
+    container_name: rclone-manager
     restart: unless-stopped
-    privileged: true
-    environment:
-      TZ: America/Los_Angeles
-      PUID: ${PUID:-1000}
-      PGID: ${PGID:-1000}
-    volumes:
-      - ${APP_ROOT}/media:/mess_media:rshared
-      - ${HOST_PATH}/installed/blackhole_app/rclone.conf:/config/rclone/rclone.conf:ro
+    stop_signal: SIGTERM
+    stop_grace_period: 30s
+    ports:
+      - "5572:5572"  # Rclone RC API
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
     cap_add:
       - SYS_ADMIN
     security_opt:
       - apparmor:unconfined
-    devices:
-      - /dev/fuse:/dev/fuse:rwm
-    command: "mount wdav-remote: /mess_media/remote/realdebrid --allow-non-empty --allow-other --uid=1000 --gid=1000 --umask=002 --dir-cache-time=10s --vfs-cache-mode=full --buffer-size=32M --vfs-read-ahead=128M --vfs-read-chunk-size=64M --vfs-read-chunk-size-limit=2G --cache-dir=/mess_media/remote/cache --transfers=1"
+    volumes:
+      - ${HOST_PATH}/installed/blackhole_app/config/config.yaml:/data/config.yaml
+      - ${HOST_PATH}/installed/blackhole_app/rclone.conf:/data/rclone.conf
+      - ${APP_ROOT}/media:/mess_media:rshared
+      - ${APP_ROOT}/data/caches:/caches/rclone
+    environment:
+      # General
+      RCLONE_BUFFER_SIZE: 0
+      RCLONE_BWLIMIT: 100M
+      RCLONE_BIND: 0.0.0.0
+      RCLONE_LOG_LEVEL: INFO
+      RCLONE_CACHE_DIR: /caches/rclone
+      RCLONE_DIR_CACHE_TIME: 10s
+      RCLONE_TIMEOUT: 10m
+      RCLONE_UMASK: 002
+      RCLONE_UID: 1000
+      RCLONE_GID: 1000
+      RCLONE_ALLOW_NON_EMPTY: "true"
+      RCLONE_ALLOW_OTHER: "true"
+      RCLONE_CONFIG: /data/rclone.conf
+
+      # RCD API
+      RCLONE_RC_ADDR: :5572
+      RCLONE_RC_NO_AUTH: "true"
+      RCLONE_RC_WEB_GUI: "true"
+      RCLONE_RC_WEB_GUI_NO_OPEN_BROWSER: "true"
+
+      # VFS Defaults
+      RCLONE_VFS_MIN_FREE_SPACE: off
+      RCLONE_VFS_CACHE_MAX_AGE: 24h
+      RCLONE_VFS_MAX_CACHE_SIZE: 100G
+      RCLONE_VFS_CACHE_MODE: full
+      RCLONE_VFS_READ_CHUNK_LIMIT: 64M
+      RCLONE_VFS_READ_CHUNK_SIZE: 5M
+
+      # Mount Defaults
+      RCLONE_NO_TRAVERSE: "true"
+      RCLONE_IGNORE_EXISTING: "true"
+      RCLONE_POLL_INTERVAL: 0
 networks:
   messnet:
     external: true
