@@ -33,7 +33,7 @@ mask_json_passwords() {
         if type == "object" and .config then
           .config |= with_entries(
             if .value != null and .value != "" and
-               (.key | test("(?i).*password.*|.*api.*key.*")) then
+               (.key | ascii_downcase | test("password")) then
               .value = "********"
             else
               .
@@ -140,6 +140,10 @@ format_env_vars() {
         .
       end;
 
+    def should_encrypt($key; $isPassword):
+      $isPassword == true or
+      ($key | ascii_downcase | test("password|apikey|secret|token|key"));
+
     if .inputs then
       .inputs[] |
       if .type != "conditional-text" then
@@ -147,7 +151,7 @@ format_env_vars() {
         {
           key: .envName,
           value: (.value | process_value),
-          isPassword: .isPassword,
+          isPassword: (should_encrypt(.envName; .isPassword)),
           quoteValue: .quoteValue
         }
       else
@@ -162,7 +166,7 @@ format_env_vars() {
           {
             key: .envName,
             value: (.value | process_value),
-            isPassword: .isPassword,
+            isPassword: (should_encrypt(.envName; .isPassword)),
             quoteValue: .quoteValue
           })
         else
@@ -181,7 +185,7 @@ format_env_vars() {
       if [[ -n "$key" ]]; then
         cleaned_key=$(clean_key "$key")
 
-        if [[ "$isPassword" == "true" ]] && [[ "$key" =~ (?i).*password.*|.*api.*key.* ]]; then
+        if [[ "$isPassword" == "true" ]]; then
           value="${value#\"}"
           value="${value%\"}"
           encrypted_value=$(encrypt_password "$value")
