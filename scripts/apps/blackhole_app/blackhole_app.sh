@@ -36,7 +36,7 @@ OBSCURED_PASS=$(docker exec rclone_pass rclone obscure "$DEBRID_PASS" | tr -d '\
 
 # Append or create the config file
 cat <<EOF > "$RCLONE_CONF_PATH"
-[wdav-remote]
+[realdebrid]
 type = webdav
 url = https://dav.real-debrid.com/
 vendor = other
@@ -48,7 +48,7 @@ EOF
 cat <<EOF >> "$RC_CONFIG_PATH"
 mounts:
   - backendName: "realdebrid"
-    mountPoint: "$APP_ROOT/data/caches"
+    mountPoint: "$APP_ROOT/media/remote/realdebrid"
 
 serves: []
 EOF
