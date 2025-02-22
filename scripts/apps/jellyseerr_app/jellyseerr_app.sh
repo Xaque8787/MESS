@@ -23,7 +23,7 @@ echo "Step 3: Starting services..."
 sleep 1
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 echo "Step 2: Configuring Jellyseerr..."
-sleep 5
+sleep 30
 source /app/virt_env/bin/activate
 python3 -m server_setup.jellyseerr.setup_jellyseerr
 sleep 10
