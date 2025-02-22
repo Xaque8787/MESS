@@ -1,2 +1,19 @@
-version: '3.8'
 services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Los_Angeles
+      - PORT=5055
+    ports:
+      - ${JELLYSEERR_PORT:-5055}:5055
+    volumes:
+      - ${HOST_PATH}/installed/jellyseerr_app/config:/app/config
+    restart: unless-stopped
+    networks:
+      messnet:
+        ipv4_address: 10.21.12.5
+networks:
+  testarrnet:
+    external: true

@@ -173,8 +173,17 @@ export const initialApps: DockerApp[] = [
         placeholder: 'Enter EPG URLS'
       },
       {
+        title: 'Enable tuner in Jellyfin',
+        envName: 'ENABLE_LIVETV',
+        type: 'checkbox',
+        required: false,
+        prereqs: [{
+          appId: 'media_server'
+        }]
+      },
+      {
         title: 'Host_ip',
-        envName: 'host',
+        envName: 'thread_host',
         type: 'text',
         required: false,
         value: '10.21.12.4',
@@ -182,7 +191,7 @@ export const initialApps: DockerApp[] = [
       },
       {
         title: 'Port',
-        envName: 'port',
+        envName: 'thread_port',
         type: 'text',
         required: false,
         value: '34400',
@@ -365,21 +374,23 @@ export const initialApps: DockerApp[] = [
     selected: false,
     initialized: false,
     visible: true,
-    prereqs: ['sonarr_app', 'radarr_app'],
+    prereqs: ['sonarr_app', 'radarr_app', 'media_server'],
     iconUrl: '/images/jellyseerr.png',
     inputs: [
       {
         title: 'Port',
         envName: 'JELLYSEERR_PORT',
         type: 'text',
-        required: true,
-        placeholder: 'Enter desired port'
+        required: false,
+        placeholder: 'Enter desired port, if blank defaults to 5055'
       },
       {
-        title: 'Enable Basic Auth',
-        envName: 'JELLYSEERR_BASIC_AUTH',
-        type: 'checkbox',
-        required: false
+        title: 'jellyseerr_ip',
+        envName: 'JELLYSEERR_IP',
+        type: 'text',
+        required: false,
+        value: '10.21.12.5',
+        visible: false
       }
     ]
   },

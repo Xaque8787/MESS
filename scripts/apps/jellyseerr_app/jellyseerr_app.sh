@@ -17,9 +17,16 @@ sleep 1
 # Move compose directory from not_installed to installed
 echo "Moving compose directory to installed..."
 mv /app/compose/not_installed/jellyseerr_app /app/compose/installed/
-
-echo "Step 2: Configuring Jellyseerr..."
 sleep 1
+COMPOSE_FILE_PATH="/app/compose/installed/jellyseerr_app/"
+echo "Step 3: Starting services..."
+sleep 1
+env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
+echo "Step 2: Configuring Jellyseerr..."
+sleep 5
+source /app/virt_env/bin/activate
+python3 -m server_setup.jellyseerr.setup_jellyseerr
+sleep 10
 
 echo "Step 3: Starting services..."
 sleep 1
