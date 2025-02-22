@@ -15,5 +15,6 @@ services:
       messnet:
         ipv4_address: 10.21.12.5
 networks:
-  testarrnet:
+  messnet:
     external: true
+    name: messnet
