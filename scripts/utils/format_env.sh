@@ -141,8 +141,8 @@ format_env_vars() {
       end;
 
     def should_encrypt($key; $isPassword):
-      $isPassword == true or
-      ($key | ascii_downcase | test("password|apikey|secret|token|key"));
+      $isPassword == true and
+      ($key | ascii_downcase | test("password|apikey|secret|token|key|pass"));
 
     if .inputs then
       .inputs[] |

@@ -111,6 +111,7 @@ export const initialApps: DockerApp[] = [
         type: 'text',
         required: true,
         quoteValue: true,
+        isPassword: true,
         placeholder: 'Enter m3u URLS'
       },
       {
@@ -161,6 +162,7 @@ export const initialApps: DockerApp[] = [
         description: 'Can be multiple urls seperated by comma',
         required: true,
         quoteValue: true,
+        isPassword: true,
         placeholder: 'Enter m3u URLS'
       },
       {
@@ -170,10 +172,11 @@ export const initialApps: DockerApp[] = [
         description: 'Can be multiple urls separated by comma',
         required: true,
         quoteValue: true,
+        isPassword: true,
         placeholder: 'Enter EPG URLS'
       },
       {
-        title: 'Enable tuner in Jellyfin',
+        title: 'Enable tuner and epg in Jellyfin',
         envName: 'ENABLE_LIVETV',
         type: 'checkbox',
         required: false,

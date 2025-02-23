@@ -38,5 +38,7 @@ source /app/virt_env/bin/activate
 python3 -m server_setup.arrs.prowlarr.connect_sonarr
 sleep 10
 python3 -m server_setup.arrs.sonarr.sonarr_setup
+sleep 10
+python3 -m server_setup.arrs.sonarr.add_blackhole_sonarr
 deactivate
 echo -e "\n✅ Sonarr installation completed!"

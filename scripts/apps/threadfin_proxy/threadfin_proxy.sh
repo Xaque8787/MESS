@@ -25,6 +25,7 @@ COMPOSE_FILE_PATH="/app/compose/installed/threadfin_proxy/"
 # Run docker-compose up in detached mode
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
 sleep 10
+ADD_TUNER=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Enable tuner and epg in Jellyfin") | .value // ""')
 # Activate the virtual environment
 source /app/virt_env/bin/activate
 
@@ -33,7 +34,12 @@ sleep 15
 python3 -m server_setup.threadfin.setup_threadfin
 
 deactivate
-
+if [ "$ADD_TUNER" = "true" ]; then
+    source /app/virt_env/bin/activate
+    sleep 10
+    python3 -m server_setup.jellyfin_api.add_tuner_and_epg
+    deactivate
+fi
 echo "Step 3: Starting services..."
 sleep 1
 
