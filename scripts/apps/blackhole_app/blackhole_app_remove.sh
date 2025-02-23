@@ -8,7 +8,7 @@ echo -e "\nStarting removal..."
 sleep 2
 
 # Define compose file path
-COMPOSE_FILE_PATH="/app/compose/installed/blackhole_app/docker-compose.yaml"
+COMPOSE_FILE_PATH="/app/compose/installed/blackhole_app/"
 
 echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down

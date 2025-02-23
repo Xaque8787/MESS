@@ -16,7 +16,7 @@ env -C "$COMPOSE_FILE_PATH" docker compose down
 echo "Step 2: Removing container..."
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/sonarr_app/.env
-rm /app/compose/installed/sonarr_app/config
+rm -rf /app/compose/installed/sonarr_app/config
 echo "Step 4: Moving configuration..."
 mv /app/compose/installed/sonarr_app /app/compose/not_installed/
 

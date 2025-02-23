@@ -17,7 +17,7 @@ echo "Step 2: Removing container..."
 
 echo "Step 3: Removing environment file..."
 rm /app/compose/dockge/.env
-rm /app/compose/dockge/config
+rm -rf /app/compose/dockge/config
 echo "Step 4: Moving configuration..."
 mv /app/compose/dockge /app/compose/not_installed/
 
