@@ -2,7 +2,7 @@
 
 echo "=== Jellyseerr Installation Script ==="
 echo "Received configuration:"
-echo "$APP_CONFIG" | jq '.'
+#echo "$APP_CONFIG" | jq '.'
 
 # Write configuration to .env file in compose directory
 echo "Writing configuration to .env file..."
