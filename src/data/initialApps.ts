@@ -180,7 +180,9 @@ export const initialApps: DockerApp[] = [
         envName: 'ENABLE_LIVETV',
         type: 'checkbox',
         required: false,
-        prereqs: ['media_server']
+        prereqs: [{
+          appId: 'm3uparser'
+        }]
       },
       {
         title: 'Host_ip',

@@ -40,21 +40,31 @@ export function checkInputPrerequisites(
   for (const prereq of input.prereqs) {
     const prereqApp = allApps.find(a => a.id === prereq.appId);
     
-    // Check if prerequisite app exists and is installed/pending
-    if (!prereqApp || (!prereqApp.initialized && !prereqApp.pendingInstall)) {
+    // First check if the prerequisite app exists
+    if (!prereqApp) {
       return {
         isValid: false,
-        message: `${prereq.appId} must be installed first to enable this option`
+        message: `Required app ${prereq.appId} not found`
       };
     }
 
-    // Check input value
-    const prereqInput = prereqApp.inputs?.find(i => i.title === prereq.inputTitle);
-    if (!prereqInput || prereqInput.value !== prereq.value) {
+    // Check if the app is installed or pending installation
+    if (!prereqApp.initialized && !prereqApp.pendingInstall) {
       return {
         isValid: false,
-        message: `${prereqApp.name} must have "${prereq.inputTitle}" enabled to use this option`
+        message: `${prereqApp.name} must be installed first to enable this option`
       };
+    }
+
+    // If inputTitle and value are specified, check those as well
+    if (prereq.inputTitle && prereq.value !== undefined) {
+      const prereqInput = prereqApp.inputs?.find(i => i.title === prereq.inputTitle);
+      if (!prereqInput || prereqInput.value !== prereq.value) {
+        return {
+          isValid: false,
+          message: `${prereqApp.name} must have "${prereq.inputTitle}" enabled to use this option`
+        };
+      }
     }
   }
 

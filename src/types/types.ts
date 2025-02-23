@@ -1,7 +1,7 @@
 export interface InputPrereq {
   appId: string;
-  inputTitle: string;
-  value: string | boolean;
+  inputTitle?: string;  // Optional - for checking specific input values
+  value?: string | boolean;  // Optional - for checking specific input values
 }
 
 export interface DependentField {
