@@ -2,7 +2,7 @@
 
 echo "=== Blackhole Installation Script ==="
 echo "Received configuration:"
-echo "$APP_CONFIG" | jq '.'
+#echo "$APP_CONFIG" | jq '.'
 
 # Write configuration to .env file in compose directory
 echo "Writing configuration to .env file..."
@@ -18,9 +18,9 @@ COMPOSE_FILE_PATH="/app/compose/installed/blackhole_app/"
 DEBRID_USER=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="RealDebrid") | .dependentField[] | select(.title=="RealDebrid Webdav Username") | .value // ""')
 DEBRID_API=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="RealDebrid") | .dependentField[] | select(.title=="RealDebrid API Key") | .value // ""')
 DEBRID_PASS=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="RealDebrid") | .dependentField[] | select(.title=="RealDebrid Webdav Password") | .value // ""')
-echo "API Key: $DEBRID_API"
-echo "PASS: $DEBRID_PASS"
-echo "User: $DEBRID_USER"
+#echo "API Key: $DEBRID_API"
+#echo "PASS: $DEBRID_PASS"
+#echo "User: $DEBRID_USER"
 env -C "$COMPOSE_FILE_PATH" docker compose -f rclone_pass.yaml up -d --wait
 if [ -f /app/compose/installed/blackhole_app/.env ]; then
     source /app/compose/installed/blackhole_app/.env
