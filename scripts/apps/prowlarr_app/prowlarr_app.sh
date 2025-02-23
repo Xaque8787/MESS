@@ -42,5 +42,14 @@ if [ "$ZILEAN_ENABLED" = "true" ]; then
   python3 -m server_setup.arrs.prowlarr.prowlarr_setup
   deactivate
 fi
+DISABLE_AUTH=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Disable Auth for local access") | .value // ""')
+if [ "$DISABLE_AUTH" = "true" ]; then
+    sed -i 's|<AuthenticationMethod>None</AuthenticationMethod>|<AuthenticationMethod>Basic</AuthenticationMethod>|' /app/compose/installed/prowlarr_app/config/config.xml
+    sleep 3
+    sed -i 's|<AuthenticationRequired>Enabled</AuthenticationRequired>|<AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>|' /app/compose/installed/prowlarr_app/config/config.xml
+    env -C "$COMPOSE_FILE_PATH" docker compose down
+    sleep 5
+    env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
+fi
 
 echo -e "\n✅ Prowlarr installation completed!"

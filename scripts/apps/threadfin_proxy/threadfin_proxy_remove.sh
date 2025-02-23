@@ -13,9 +13,6 @@ COMPOSE_FILE_PATH="/app/compose/installed/threadfin_proxy/"
 echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down
 
-echo "Step 2: Removing container..."
-docker rm threadfin
-
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/threadfin_proxy/.env
 

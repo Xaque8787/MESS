@@ -11,14 +11,13 @@ sleep 2
 COMPOSE_FILE_PATH="/app/compose/installed/blackhole_app/docker-compose.yaml"
 
 echo "Step 1: Stopping services..."
-docker compose -f "$COMPOSE_FILE_PATH" down
+env -C "$COMPOSE_FILE_PATH" docker compose down
 
-echo "Step 2: Removing container..."
-docker rm blackhole
-
+echo "Step 2: Removing file contents..."
+> /app/compose/installed/blackhole_app/rclone.conf
+> /app/compose/installed/blackhole_app/config/config.yaml
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/blackhole_app/.env
-
 echo "Step 4: Moving configuration..."
 mv /app/compose/installed/blackhole_app /app/compose/not_installed/
 

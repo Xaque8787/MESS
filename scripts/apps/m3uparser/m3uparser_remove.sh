@@ -13,9 +13,6 @@ COMPOSE_FILE_PATH="/app/compose/installed/m3uparser/"
 echo "Step 1: Stopping services..."
 env -C "$COMPOSE_FILE_PATH" docker compose down
 
-echo "Step 2: Removing container..."
-docker rm m3uparser
-
 echo "Step 3: Removing environment file..."
 rm /app/compose/installed/m3uparser/.env
 

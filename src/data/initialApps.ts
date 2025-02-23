@@ -241,6 +241,20 @@ export const initialApps: DockerApp[] = [
         placeholder: 'Enter desired port, blank will set 8989'
       },
       {
+        title: 'Enable 4K instance',
+        envName: 'SONARR_4k',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [
+          {
+            title: 'Sonarr 4k Port',
+            envName: 'RADARR_4k_PROVIDED_PORT',
+            type: 'text',
+            placeholder: 'Enter desired port, blank will set 8787'
+          }
+        ]
+      },
+      {
         title: 'Disable Auth for local access',
         envName: 'SONARR_DISABLE_AUTH',
         type: 'checkbox',
@@ -323,8 +337,8 @@ export const initialApps: DockerApp[] = [
         placeholder: 'Enter desired port'
       },
       {
-        title: 'Enable Basic Auth',
-        envName: 'PROWLARR_BASIC_AUTH',
+        title: 'Disable Auth for local access',
+        envName: 'PROWLARR_DISABLE_AUTH',
         type: 'checkbox',
         required: false
       },
@@ -399,7 +413,7 @@ export const initialApps: DockerApp[] = [
   },
   {
     id: 'blackhole_app',
-    name: 'Blackhole',
+    name: 'Decypharr',
     installOrder: 2,
     description: 'Blackhole downloader for sonarr/radarr',
     category: 'DOWNLOAD CLIENTS',
@@ -408,19 +422,6 @@ export const initialApps: DockerApp[] = [
     visible: true,
     iconUrl: '/images/black-hole.svg',
     inputs: [
-      {
-        title: 'TorBox',
-        envName: 'ENABLE_TORBOX',
-        type: 'conditional-text',
-        required: false,
-        dependentField: [{
-          title: 'TorBox API Key',
-          envName: 'TORBOX_API_KEY',
-          type: 'text',
-          placeholder: 'Enter TorBox API key',
-          required: true
-        }]
-      },
       {
         title: 'RealDebrid',
         envName: 'ENABLE_REALDEBRID',
@@ -452,6 +453,19 @@ export const initialApps: DockerApp[] = [
           required: true
             }
         ]
+      },
+      {
+        title: 'TorBox',
+        envName: 'ENABLE_TORBOX',
+        type: 'conditional-text',
+        required: false,
+        dependentField: [{
+          title: 'TorBox API Key',
+          envName: 'TORBOX_API_KEY',
+          type: 'text',
+          placeholder: 'Enter TorBox API key',
+          required: true
+        }]
       },
       {
         title: 'Allow un-cached',
