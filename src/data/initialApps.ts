@@ -181,7 +181,7 @@ export const initialApps: DockerApp[] = [
         type: 'checkbox',
         required: false,
         prereqs: [{
-          appId: 'm3uparser'
+          appId: 'media_server'
         }]
       },
       {
