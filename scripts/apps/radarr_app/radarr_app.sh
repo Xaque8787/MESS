@@ -39,6 +39,17 @@ python3 -m server_setup.arrs.prowlarr.connect_radarr
 sleep 10
 python3 -m server_setup.arrs.radarr.radarr_setup
 sleep 10
-python3 -m server_setup.arrs.radarr.add_blackhole_radarr
+if [ -f /app/compose/installed/blackhole_app/.env ]; then
+  python3 -m server_setup.arrs.sonarr.add_blackhole_sonarr
+fi
 deactivate
+DISABLE_AUTH=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Disable Auth for local access") | .value // ""')
+if [ "$DISABLE_AUTH" = "true" ]; then
+    sed -i 's|<AuthenticationMethod>None</AuthenticationMethod>|<AuthenticationMethod>Basic</AuthenticationMethod>|' /app/compose/installed/radarr_app/config/config.xml
+    sleep 3
+    sed -i 's|<AuthenticationRequired>Enabled</AuthenticationRequired>|<AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>|' /app/compose/installed/radarr_app/config/config.xml
+    env -C "$COMPOSE_FILE_PATH" docker compose down
+    sleep 5
+    env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
+fi
 echo -e "\n✅ Radarr installation completed!"

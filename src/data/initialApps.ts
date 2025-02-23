@@ -241,8 +241,8 @@ export const initialApps: DockerApp[] = [
         placeholder: 'Enter desired port, blank will set 8989'
       },
       {
-        title: 'Enable Basic Auth',
-        envName: 'SONARR_BASIC_AUTH',
+        title: 'Disable Auth for local access',
+        envName: 'SONARR_DISABLE_AUTH',
         type: 'checkbox',
         required: false
       }
@@ -276,12 +276,6 @@ export const initialApps: DockerApp[] = [
         placeholder: 'Enter desired port, blank will set 7878'
       },
       {
-        title: 'Enable Basic Auth',
-        envName: 'RADARR_BASIC_AUTH',
-        type: 'checkbox',
-        required: false
-      },
-      {
         title: 'Enable 4K instance',
         envName: 'RADRR_4k',
         type: 'conditional-text',
@@ -294,6 +288,12 @@ export const initialApps: DockerApp[] = [
             placeholder: 'Enter desired port, blank will set 8787'
           }
         ]
+      },
+      {
+        title: 'Disable Auth for local access',
+        envName: 'RADARR_DISABLE_AUTH',
+        type: 'checkbox',
+        required: false
       }
     ]
   },
@@ -431,6 +431,7 @@ export const initialApps: DockerApp[] = [
           title: 'RealDebrid API Key',
           envName: 'REALDEBRID_API_KEY',
           type: 'text',
+          isPassword: true,
           placeholder: 'Enter RealDebrid API key',
           required: true
             },
@@ -438,6 +439,7 @@ export const initialApps: DockerApp[] = [
           title: 'RealDebrid Webdav Username',
           envName: 'REALDEBRID_WEBDAV_USER',
           type: 'text',
+          isPassword: true,
           placeholder: 'Enter RealDebrid Webdav username',
           required: true
             },

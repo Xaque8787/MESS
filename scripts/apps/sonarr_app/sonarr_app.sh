@@ -39,6 +39,18 @@ python3 -m server_setup.arrs.prowlarr.connect_sonarr
 sleep 10
 python3 -m server_setup.arrs.sonarr.sonarr_setup
 sleep 10
-python3 -m server_setup.arrs.sonarr.add_blackhole_sonarr
+if [ -f /app/compose/installed/blackhole_app/.env ]; then
+  python3 -m server_setup.arrs.sonarr.add_blackhole_sonarr
+fi
 deactivate
+sleep 3
+DISABLE_AUTH=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Disable Auth for local access") | .value // ""')
+if [ "$DISABLE_AUTH" = "true" ]; then
+    sed -i 's|<AuthenticationMethod>None</AuthenticationMethod>|<AuthenticationMethod>Basic</AuthenticationMethod>|' /app/compose/installed/sonarr_app/config/config.xml
+    sleep 3
+    sed -i 's|<AuthenticationRequired>Enabled</AuthenticationRequired>|<AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>|' /app/compose/installed/sonarr_app/config/config.xml
+    env -C "$COMPOSE_FILE_PATH" docker compose down
+    sleep 5
+    env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
+fi
 echo -e "\n✅ Sonarr installation completed!"
