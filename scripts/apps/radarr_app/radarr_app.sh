@@ -40,7 +40,7 @@ sleep 10
 python3 -m server_setup.arrs.radarr.radarr_setup
 sleep 10
 if [ -f /app/compose/installed/blackhole_app/.env ]; then
-  python3 -m server_setup.arrs.sonarr.add_blackhole_sonarr
+  python3 -m server_setup.arrs.radarr.add_blackhole_radarr
 fi
 deactivate
 DISABLE_AUTH=$(echo "$APP_CONFIG" | jq -r '.inputs[] | select(.title=="Disable Auth for local access") | .value // ""')
