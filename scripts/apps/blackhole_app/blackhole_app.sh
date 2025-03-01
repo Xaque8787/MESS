@@ -35,7 +35,7 @@ sleep 10
 OBSCURED_PASS=$(docker exec rclone_pass rclone obscure "$DEBRID_PASS" | tr -d '\r')
 
 # Append or create the config file
-cat <<EOF > "$RCLONE_CONF_PATH"
+cat <<EOF >> "$RCLONE_CONF_PATH"
 [realdebrid]
 type = webdav
 url = https://dav.real-debrid.com/
