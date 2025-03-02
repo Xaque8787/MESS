@@ -22,8 +22,8 @@ COMPOSE_FILE_PATH="/app/compose/installed/jellyseerr_app/"
 echo "Step 3: Starting services..."
 sleep 1
 env -C "$COMPOSE_FILE_PATH" docker compose up -d --wait
-echo "Step 2: Configuring Jellyseerr..."
-sleep 60
+echo "Step 2: Configuring Jellyseerr... waiting for config to initialize"
+sleep 123
 source /app/virt_env/bin/activate
 python3 -m server_setup.jellyseerr.setup_jellyseerr
 deactivate
