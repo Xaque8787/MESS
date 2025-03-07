@@ -32,7 +32,7 @@ export function CheckboxInput({ input, onChange }: CheckboxInputProps) {
         {input.tooltip && (
           <div className="relative group">
             <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-w-xs break-words">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 min-w-[200px] max-w-xs whitespace-normal break-words">
               {tooltipContent}
               <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-1 border-4 border-transparent border-t-gray-900" />
             </div>
