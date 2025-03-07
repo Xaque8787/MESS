@@ -7,6 +7,7 @@ export interface InputPrereq {
 export interface DependentField {
   title: string;
   envName: string;
+  type: 'text' | 'checkbox';
   description?: string;
   placeholder?: string;
   value?: string | boolean;
@@ -15,7 +16,6 @@ export interface DependentField {
   quoteValue?: boolean;
   isPassword?: boolean;
   prereqs?: InputPrereq[];
-  type: 'text' | 'checkbox';
   enable_override?: boolean;
 }
 

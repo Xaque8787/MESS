@@ -679,6 +679,17 @@ export const initialApps: DockerApp[] = [
     visible: true,
     iconUrl: 'https://raw.githubusercontent.com/qdm12/gluetun/refs/heads/master/title.svg',
     inputs: [
+        {
+         title: 'VPN Provider',
+         envName: 'VPN_SERVICE_PROVIDER',
+         type: 'dropdown',
+         required: true,
+         options: [
+           { label: 'NordVPN', value: 'nordvpn' },
+           { label: 'ExpressVPN', value: 'expressvpn' },
+           { label: 'Private Internet Access', value: 'pia' }
+         ]
+      },
       {
         title: 'VPN Provider',
         envName: 'VPN_SERVICE_PROVIDER',
@@ -691,6 +702,17 @@ export const initialApps: DockerApp[] = [
         type: 'conditional-text',
         required: false,
         dependentField: [
+          {
+           title: 'Server Location',
+           envName: 'VPN_SERVER',
+           type: 'dropdown',
+           required: true,
+           options: [
+             { label: 'United States', value: 'us' },
+             { label: 'United Kingdom', value: 'uk' },
+             { label: 'Germany', value: 'de' }
+           ]
+          },
           {
             title: 'Private Key',
             envName: 'WIREGUARD_PRIVATE_KEY',
