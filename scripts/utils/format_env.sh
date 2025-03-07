@@ -82,8 +82,8 @@ format_env_vars() {
         # For checkbox type, check if value is true
         if .type == "checkbox" and .value == true then
           .envName
-        # For text type, check if value is non-empty
-        elif .type == "text" and .value != "" and .value != null then
+        # For text or dropdown type, check if value is non-empty
+        elif (.type == "text" or .type == "dropdown") and .value != "" and .value != null then
           .envName
         # For conditional-text, check if value is true
         elif .type == "conditional-text" and .value == true then
@@ -98,7 +98,7 @@ format_env_vars() {
         .dependentField[] | select(.enable_override == true) |
         if .type == "checkbox" and .value == true then
           .envName
-        elif .type == "text" and .value != "" and .value != null then
+        elif (.type == "text" or .type == "dropdown") and .value != "" and .value != null then
           .envName
         else
           empty
