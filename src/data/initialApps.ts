@@ -719,7 +719,7 @@ export const initialApps: DockerApp[] = [
             title: 'Private Key',
             envName: 'WIREGUARD_PRIVATE_KEY',
             type: 'text',
-            tooltip: 'Your API key can be found in your account settings',
+            tooltip: 'Your API key can be found in your account settings how laodna fas dasd asd asdf assdasdas sdsdsadsdasda',
             description: 'Wiregaurd private key',
             required: true
           },
@@ -771,7 +771,7 @@ export const initialApps: DockerApp[] = [
       {
         title: 'SABNZBD',
         envName: 'SAB_VPN',
-        tooltip: 'Your API key can be found in your account settings',
+        tooltip: 'Your API key can be found in \nyour account settings',
         type: 'checkbox',
         required: false,
         description: 'VPN for SABNZBD',

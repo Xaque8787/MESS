@@ -8,6 +8,14 @@ interface DropdownInputProps {
 }
 
 export function DropdownInput({ input, onChange }: DropdownInputProps) {
+  // Convert \n in tooltip to line breaks
+  const tooltipContent = input.tooltip?.split('\n').map((line, i) => (
+    <React.Fragment key={i}>
+      {line}
+      {i < input.tooltip!.split('\n').length - 1 && <br />}
+    </React.Fragment>
+  ));
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2 mb-1">
@@ -18,8 +26,8 @@ export function DropdownInput({ input, onChange }: DropdownInputProps) {
         {input.tooltip && (
           <div className="relative group">
             <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap">
-              {input.tooltip}
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-w-xs break-words">
+              {tooltipContent}
               <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-1 border-4 border-transparent border-t-gray-900" />
             </div>
           </div>
