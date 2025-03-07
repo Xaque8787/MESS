@@ -683,6 +683,7 @@ export const initialApps: DockerApp[] = [
          title: 'VPN Provider_test',
          envName: 'VPN_SERVICE_test',
          type: 'dropdown',
+         tooltip: 'Your API key can be found in your account settings',
          required: true,
          options: [
            { label: 'NordVPN', value: 'nordvpn' },
@@ -693,6 +694,7 @@ export const initialApps: DockerApp[] = [
       {
         title: 'VPN Provider',
         envName: 'VPN_SERVICE_PROVIDER',
+        tooltip: 'Your API key can be found in your account settings',
         type: 'text',
         required: true
       },
@@ -717,6 +719,7 @@ export const initialApps: DockerApp[] = [
             title: 'Private Key',
             envName: 'WIREGUARD_PRIVATE_KEY',
             type: 'text',
+            tooltip: 'Your API key can be found in your account settings',
             description: 'Wiregaurd private key',
             required: true
           },
@@ -768,6 +771,7 @@ export const initialApps: DockerApp[] = [
       {
         title: 'SABNZBD',
         envName: 'SAB_VPN',
+        tooltip: 'Your API key can be found in your account settings',
         type: 'checkbox',
         required: false,
         description: 'VPN for SABNZBD',

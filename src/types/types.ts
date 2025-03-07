@@ -23,6 +23,7 @@ export interface DependentField {
   prereqs?: InputPrereq[];
   enable_override?: boolean;
   options?: InputOption[];  // For dropdown type
+  tooltip?: string;  // Added tooltip support
 }
 
 export interface AppInput {
@@ -40,6 +41,7 @@ export interface AppInput {
   dependentField?: DependentField[];
   enable_override?: boolean;
   options?: InputOption[];  // For dropdown type
+  tooltip?: string;  // Added tooltip support
 }
 
 export interface DockerApp {
