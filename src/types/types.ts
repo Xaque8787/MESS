@@ -1,3 +1,8 @@
+export interface InputOption {
+  label: string;
+  value: string;
+}
+
 export interface InputPrereq {
   appId: string;
   inputTitle?: string;  // Optional - for checking specific input values
@@ -7,7 +12,7 @@ export interface InputPrereq {
 export interface DependentField {
   title: string;
   envName: string;
-  type: 'text' | 'checkbox';
+  type: 'text' | 'checkbox' | 'dropdown';
   description?: string;
   placeholder?: string;
   value?: string | boolean;
@@ -17,12 +22,13 @@ export interface DependentField {
   isPassword?: boolean;
   prereqs?: InputPrereq[];
   enable_override?: boolean;
+  options?: InputOption[];  // For dropdown type
 }
 
 export interface AppInput {
   title: string;
   envName: string;
-  type: 'text' | 'checkbox' | 'conditional-text';
+  type: 'text' | 'checkbox' | 'conditional-text' | 'dropdown';
   required: boolean;
   description?: string;
   placeholder?: string;
@@ -33,6 +39,7 @@ export interface AppInput {
   prereqs?: InputPrereq[];
   dependentField?: DependentField[];
   enable_override?: boolean;
+  options?: InputOption[];  // For dropdown type
 }
 
 export interface DockerApp {

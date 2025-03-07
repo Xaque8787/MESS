@@ -20,6 +20,7 @@ export function DropdownInput({ input, onChange }: DropdownInputProps) {
         value={input.value as string || ''}
         onChange={(e) => onChange(e.target.value)}
         className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+        required={input.required}
       >
         <option value="">Select an option</option>
         {input.options?.map((option) => (

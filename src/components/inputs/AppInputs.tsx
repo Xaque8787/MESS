@@ -3,6 +3,7 @@ import { AppInput, DockerApp } from '../../types/types';
 import { TextInput } from './TextInput';
 import { CheckboxInput } from './CheckboxInput';
 import { ConditionalTextInput } from './ConditionalTextInput';
+import { DropdownInput } from './DropdownInput';
 import { checkInputPrerequisites } from '../../utils/prerequisiteCheck';
 
 interface AppInputsProps {
@@ -13,11 +14,9 @@ interface AppInputsProps {
 }
 
 export function AppInputs({ inputs, allApps, onChange, onClick }: AppInputsProps) {
-  // Filter out invisible inputs for UI rendering
   const visibleInputs = inputs.filter(input => input.visible !== false);
 
   const handleInputChange = (input: AppInput, value: string | boolean, dependentValues?: Record<string, string | boolean>) => {
-    // For checkbox inputs with prerequisites, check if they can be enabled
     if (input.type === 'checkbox' && value === true && input.prereqs) {
       const prereqCheck = checkInputPrerequisites(input, allApps);
       if (!prereqCheck.isValid) {
@@ -32,7 +31,12 @@ export function AppInputs({ inputs, allApps, onChange, onClick }: AppInputsProps
     <div className="space-y-3" onClick={onClick}>
       {visibleInputs.map((input) => (
         <div key={input.title}>
-          {input.type === 'conditional-text' ? (
+          {input.type === 'dropdown' ? (
+            <DropdownInput
+              input={input}
+              onChange={(value) => handleInputChange(input, value)}
+            />
+          ) : input.type === 'conditional-text' ? (
             <ConditionalTextInput
               input={input}
               allApps={allApps}

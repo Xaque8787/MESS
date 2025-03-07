@@ -680,8 +680,8 @@ export const initialApps: DockerApp[] = [
     iconUrl: 'https://raw.githubusercontent.com/qdm12/gluetun/refs/heads/master/title.svg',
     inputs: [
         {
-         title: 'VPN Provider',
-         envName: 'VPN_SERVICE_PROVIDER',
+         title: 'VPN Provider_test',
+         envName: 'VPN_SERVICE_test',
          type: 'dropdown',
          required: true,
          options: [
