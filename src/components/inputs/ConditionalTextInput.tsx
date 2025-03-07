@@ -99,6 +99,31 @@ export function ConditionalTextInput({ input, allApps = [], onChange }: Conditio
                       {field.title}
                     </label>
                   </div>
+                ) : field.type === 'dropdown' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {field.title}
+                      {field.required && <span className="text-red-500 ml-1">*</span>}
+                    </label>
+                    <select
+                      value={(field.value as string) || ''}
+                      onChange={(e) => handleDependentValueChange(field, e.target.value)}
+                      className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full bg-white"
+                      required={field.required}
+                    >
+                      <option value="">Select an option</option>
+                      {field.options?.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    {field.required && !field.value && (
+                      <p className="text-red-500 text-xs mt-1">
+                        This field is required when {input.title} is enabled
+                      </p>
+                    )}
+                  </div>
                 ) : (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
